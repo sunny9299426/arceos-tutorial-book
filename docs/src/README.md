@@ -1,4 +1,4 @@
-# 简明 ArceOS Tutorial Book
+# 简明 ArceOS tutorial book
 
 ## 自己动手写组件化操作系统：自顶向下+自底向上的方法
 
