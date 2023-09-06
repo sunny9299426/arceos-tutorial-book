@@ -206,7 +206,7 @@
 </li>
 </ol>
 <p>总的来说，Unikernel 是一种精简、定制化的操作系统构建技术，旨在提供更高的性能、更低的资源消耗和更强的安全性。它适用于各种场景，包括嵌入式系统、云计算平台和容器化环境等。</p>
-<img src="D:\img1_2_1.png" alt="img1_2_1" style="zoom: 33%;" />
+<img src="./img/img1_2_1.png" alt="img1_2_1" style="zoom: 33%;" />
 <p>为了更好的理解Unikernel，我们对 Unikernel（单一内核）、 Micro Kernel（微内核）、Monolithic Kernel（宏内核）进行对比。</p>
 <div class="table-wrapper"><table><thead><tr><th></th><th>Unikernel（单一内核）</th><th>Micro Kernel（微内核）</th><th>Monolithic Kernel（宏内核）</th></tr></thead><tbody>
 <tr><td>架构</td><td>将应用程序、操作系统内核、必要的组件紧密集成在一起，以创建一个高度定制化和最小化的镜像。</td><td>采用模块化设计，将操作系统的核心功能最小化，额外的功能和服务实现为用户空间的服务模块。</td><td>将各种功能和服务集成到一个单体内核中，如进程管理、内存管理、文件系统、网络协议栈等。</td></tr>
@@ -219,12 +219,12 @@
 <h3 id="组件"><a class="header" href="#组件">组件</a></h3>
 <p>预构建的、可以复用的、封装特定功能的独立实体。组件与外部只能通过公开的接口通信。在不同阶段组件可能有不同的形式。</p>
 <p>基于Rust语言实现组件时，组件≈Crate</p>
-<img src="D:\img1_2_2.png" alt="image-20230904110853739" style="zoom:50%;" />
+<img src="./img/img1_2_2.png" alt="image-20230904110853739" style="zoom:50%;" />
 <h3 id="组件化os"><a class="header" href="#组件化os">组件化OS</a></h3>
 <p>组件是构建OS的基础，Building Block。一切皆组件：底层的系统引导，中层的核心功能，上层的驱动以及服务，最上层的应用，都是组件。</p>
 <p>根据应用的需求，选择一系列组件，通过一定的组合方式，来构造OS。</p>
 <p>与传统不同，组件化OS项目更像是建立一个工厂，然后通过工厂生成各种OS产品。</p>
-<img src="D:\img1_2_3.png" alt="image-20230904110807633" style="zoom:50%;" />
+<img src="./img/img1_2_3.png" alt="image-20230904110807633" style="zoom:50%;" />
 <h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
 <ul>
 <li><a href="https://github.com/chyyuu/aos_course_info/blob/master/unikernel-related.md">unikernel信息收集</a></li>

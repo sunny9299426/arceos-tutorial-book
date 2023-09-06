@@ -179,19 +179,19 @@
 <p>本章主要介绍 ArceOS 的背景、概念、设计目标、设计思想及总体架构，最后对未来发展的一些想法。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="背景"><a class="header" href="#背景">背景</a></h2>
 <p>计算机发展到今天，新型硬件层出不穷，应用对性能和安全的需求也越来越⾼。而作为底层支撑的操作系统却发展滞后，无论是以 Linux，Windows 为代表的通用操作系统，还是如 RT-Thread、FreeRTOS 等实时操作系统，都存在着各种各样的问题，很难满足硬件和应用对操作系统的发展需求。</p>
-<img src="D:\img1_1_1.png" alt="image-20230904105516339" style="zoom:50%;" />
+<img src="./img/img1_1_1.png" alt="image-20230904105516339" style="zoom:50%;" />
 <p>⽬前操作系统存在的主要问题：</p>
 <ul>
 <li>
 <p>安全性问题，主要是内存安全，各种漏洞越来增多；</p>
-<img src="D:\img1_1_2.png" alt="image-20230904105736242" style="zoom:50%;" />
+<img src="./img/img1_1_2.png" alt="image-20230904105736242" style="zoom:50%;" />
 </li>
 <li>
 <p>⾯向通⽤场景，现在的操作系统大多是通用操作系统，为了适应各种各样的场景，需要要做多方面的权衡，从而导致操作系统越来越臃肿、笨重；</p>
 </li>
 <li>
 <p>有些操作系统虽然采用了一些组件化设计思想，但是组件之间的耦合度高，导致组件难以重⽤；</p>
-<img src="D:\img1_1_3.png" alt="image-20230904105825026" style="zoom: 67%;" />
+<img src="./img/img1_1_3.png" alt="image-20230904105825026" style="zoom: 67%;" />
 </li>
 <li>
 <p>基于现有的复杂的操作系统，开发应用的门槛较高，复杂性也越来越高。</p>
@@ -244,7 +244,7 @@
 </li>
 </ol>
 <p>总的来说，Unikernel 是一种精简、定制化的操作系统构建技术，旨在提供更高的性能、更低的资源消耗和更强的安全性。它适用于各种场景，包括嵌入式系统、云计算平台和容器化环境等。</p>
-<img src="D:\img1_2_1.png" alt="img1_2_1" style="zoom: 33%;" />
+<img src="./img/img1_2_1.png" alt="img1_2_1" style="zoom: 33%;" />
 <p>为了更好的理解Unikernel，我们对 Unikernel（单一内核）、 Micro Kernel（微内核）、Monolithic Kernel（宏内核）进行对比。</p>
 <div class="table-wrapper"><table><thead><tr><th></th><th>Unikernel（单一内核）</th><th>Micro Kernel（微内核）</th><th>Monolithic Kernel（宏内核）</th></tr></thead><tbody>
 <tr><td>架构</td><td>将应用程序、操作系统内核、必要的组件紧密集成在一起，以创建一个高度定制化和最小化的镜像。</td><td>采用模块化设计，将操作系统的核心功能最小化，额外的功能和服务实现为用户空间的服务模块。</td><td>将各种功能和服务集成到一个单体内核中，如进程管理、内存管理、文件系统、网络协议栈等。</td></tr>
@@ -257,12 +257,12 @@
 <h3 id="组件"><a class="header" href="#组件">组件</a></h3>
 <p>预构建的、可以复用的、封装特定功能的独立实体。组件与外部只能通过公开的接口通信。在不同阶段组件可能有不同的形式。</p>
 <p>基于Rust语言实现组件时，组件≈Crate</p>
-<img src="D:\img1_2_2.png" alt="image-20230904110853739" style="zoom:50%;" />
+<img src="./img/img1_2_2.png" alt="image-20230904110853739" style="zoom:50%;" />
 <h3 id="组件化os"><a class="header" href="#组件化os">组件化OS</a></h3>
 <p>组件是构建OS的基础，Building Block。一切皆组件：底层的系统引导，中层的核心功能，上层的驱动以及服务，最上层的应用，都是组件。</p>
 <p>根据应用的需求，选择一系列组件，通过一定的组合方式，来构造OS。</p>
 <p>与传统不同，组件化OS项目更像是建立一个工厂，然后通过工厂生成各种OS产品。</p>
-<img src="D:\img1_2_3.png" alt="image-20230904110807633" style="zoom:50%;" />
+<img src="./img/img1_2_3.png" alt="image-20230904110807633" style="zoom:50%;" />
 <h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
 <ul>
 <li><a href="https://github.com/chyyuu/aos_course_info/blob/master/unikernel-related.md">unikernel信息收集</a></li>
@@ -270,9 +270,9 @@
 <div style="break-before: page; page-break-before: always;"></div><h2 id="设计思想"><a class="header" href="#设计思想">设计思想</a></h2>
 <h3 id="组件化方法构造-os"><a class="header" href="#组件化方法构造-os">组件化方法构造 OS</a></h3>
 <p>以组件库为基础，通过组合组件方式构造各种特性的 OS。即研究一种基于组件构造 OS 的&quot;工厂式&quot;方法。</p>
-<img src="D:\img1_3_1.png" alt="img3_1_1" style="zoom: 33%;" />
+<img src="./img/img1_3_1.png" alt="img3_1_1" style="zoom: 33%;" />
 <h3 id="操作系统相关与无关"><a class="header" href="#操作系统相关与无关">操作系统相关与无关</a></h3>
-<img src="D:\img1_3_2.png" alt="img1_3_2" style="zoom: 33%;" />
+<img src="./img/img1_3_2.png" alt="img1_3_2" style="zoom: 33%;" />
 <h3 id="主干组件与功能组件"><a class="header" href="#主干组件与功能组件">主干组件与功能组件</a></h3>
 <ol>
 <li>
@@ -292,14 +292,14 @@
 <p>3.2 同一功能组中的各个组件是互备关系，可以互相替换。</p>
 </li>
 </ol>
-<img src="D:\img1_3_3.png" alt="image-20230904145124738" style="zoom: 50%;" />
-<img src="D:\img1_3_4.png" alt="image-20230904145157274" style="zoom:50%;" />
+<img src="./img/img1_3_3.png" alt="image-20230904145124738" style="zoom: 50%;" />
+<img src="./img/img1_3_4.png" alt="image-20230904145157274" style="zoom:50%;" />
 <h3 id="面向应用"><a class="header" href="#面向应用">面向应用</a></h3>
 <ol>
 <li>以应用为中心：整个系统服务于应用和支撑应用</li>
 <li>依赖组件集合最小化：满足应用运行前提下，无冗余组件</li>
 </ol>
-<img src="D:\img1_3_5.png" alt="img1_3_5" style="zoom: 33%;" />
+<img src="./img/img1_3_5.png" alt="img1_3_5" style="zoom: 33%;" />
 <div style="break-before: page; page-break-before: always;"></div><h2 id="总体架构"><a class="header" href="#总体架构">总体架构</a></h2>
 <img src="./assets/ArceOS.svg" />
 <p>ArceOS 是一个实验性的、组件化的操作系统（Unikernel），它使用 Rust 开发。从架构上包含如下几层：</p>
@@ -318,7 +318,7 @@
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="未来发展"><a class="header" href="#未来发展">未来发展</a></h2>
 <h3 id="异步"><a class="header" href="#异步">异步</a></h3>
-<img src="D:\img1_5_1.png" alt="img1_5_1" style="zoom:50%;" />
+<img src="./img/img1_5_1.png" alt="img1_5_1" style="zoom:50%;" />
 <h4 id="研究的基础"><a class="header" href="#研究的基础">研究的基础</a></h4>
 <ol>
 <li>IO 密集型是 AIoT 的典型场景，最适合采用异步</li>
@@ -342,10 +342,10 @@
 <li>协程(tokio 中称 task)，基于 Rust 语言的异步特性 async/await，有专门的 task 调度。</li>
 <li>线程，即 OS 的线程。负责执行若干个 task 协程。并且具有特定条件下，steal task 的能力。</li>
 </ol>
-<p><img src="D:%5Cimg1_5_2.png" alt="img1_5_2" /></p>
+<p><img src="./img/img1_5_2.png" alt="img1_5_2" /></p>
 <h3 id="平台移植"><a class="header" href="#平台移植">平台移植</a></h3>
 <p>树莓派 arm 平台的移植参考。arm 体系结构已存在，基本不用改；platform 增加对应目录，大部分代码可复用 aarch64_common 中内容。</p>
-<img src="D:\img1_5_3.png" alt="image-20230904150940084" style="zoom: 50%;" />
+<img src="./img/img1_5_3.png" alt="image-20230904150940084" style="zoom: 50%;" />
 <h3 id="宏内核微内核"><a class="header" href="#宏内核微内核">宏内核/微内核</a></h3>
 <ol>
 <li>
@@ -356,11 +356,11 @@
 </li>
 <li>
 <p>引入系统调用层以及进程相关的功能</p>
-<img src="D:\img1_5_4.png" alt="image-20230904151126374" style="zoom:50%;" />
+<img src="./img/img1_5_4.png" alt="image-20230904151126374" style="zoom:50%;" />
 </li>
 </ol>
 <h3 id="研究全景图"><a class="header" href="#研究全景图">研究全景图</a></h3>
-<p><img src="D:%5Cimg1_5_5.png" alt="image-20230904151939317" /></p>
+<p><img src="./img/img1_5_5.png" alt="image-20230904151939317" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="实验环境配置"><a class="header" href="#实验环境配置">实验环境配置</a></h1>
 <p>本章我们将完成环境配置并成功运行 helloworld unikernel。整个流程分为以下几个部分：</p>
 <ul>
@@ -602,14 +602,14 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <li>Unikernel：单优先权，单地址空间</li>
 <li>组件化：基于组件方法构造</li>
 </ul>
-<img src="D:\img3_0_1.png" alt="image-20230905151307734" style="zoom:50%;" />
+<img src="./img/img3_0_1.png" alt="image-20230905151307734" style="zoom:50%;" />
 <h4 id="迭代步骤"><a class="header" href="#迭代步骤">迭代步骤</a></h4>
 <ul>
 <li>单裸机程序</li>
 <li>层次化</li>
 <li>组件化(模块化)</li>
 </ul>
-<img src="D:\img3_0_2.png" alt="image-20230905151445642" style="zoom: 33%;" />
+<img src="./img/img3_0_2.png" alt="image-20230905151445642" style="zoom: 33%;" />
 <h4 id="相关组件"><a class="header" href="#相关组件">相关组件</a></h4>
 <ul>
 <li>
@@ -639,23 +639,23 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </li>
 </ul>
 <h3 id="机制"><a class="header" href="#机制">机制</a></h3>
-<img src="D:\img3_0_3.png" alt="image-20230905151554560" style="zoom:50%;" />
+<img src="./img/img3_0_3.png" alt="image-20230905151554560" style="zoom:50%;" />
 <h3 id="示例"><a class="header" href="#示例">示例</a></h3>
 <h4 id="引导过程示例-axhalriscv64"><a class="header" href="#引导过程示例-axhalriscv64">引导过程示例: axhal(riscv64)</a></h4>
-<img src="D:\img3_0_4.png" alt="image-20230905151803155" style="zoom: 50%;" />
+<img src="./img/img3_0_4.png" alt="image-20230905151803155" style="zoom: 50%;" />
 <h4 id="引导过程示例-axruntime"><a class="header" href="#引导过程示例-axruntime">引导过程示例: axruntime</a></h4>
-<img src="D:\img3_0_5.png" alt="image-20230905152234898" style="zoom:50%;" />
-<img src="D:\img3_0_6.png" alt="image-20230905152308892" style="zoom:50%;" />
-<img src="D:\img3_0_7.png" alt="image-20230905152347065" style="zoom:50%;" />
+<img src="./img/img3_0_5.png" alt="image-20230905152234898" style="zoom:50%;" />
+<img src="./img/img3_0_6.png" alt="image-20230905152308892" style="zoom:50%;" />
+<img src="./img/img3_0_7.png" alt="image-20230905152347065" style="zoom:50%;" />
 <h4 id="app引导完成转入运行"><a class="header" href="#app引导完成转入运行">app引导完成转入运行</a></h4>
 <p>应用启动，并基于运行环境提供的各种功能，完成自身的逻辑计算。对于 Helloworld，仅仅需要借助 ulib 中axstd::println 完成打印输出。</p>
-<img src="D:\img3_0_8.png" alt="image-20230905152554161" style="zoom:50%;" />
+<img src="./img/img3_0_8.png" alt="image-20230905152554161" style="zoom:50%;" />
 <h4 id="日志级别控制与features"><a class="header" href="#日志级别控制与features">日志级别控制与features</a></h4>
 <p>在编译并运行helloworld时，可以指定LOG环境变量，以输出不同级别的日志。</p>
 <pre><code>make LOG=info run
 </code></pre>
 <p>这是通过features传递，改变kernel行为的具体方法。可以通过三种方式指定features：</p>
-<img src="D:\img3_0_9.png" alt="image-20230905161958548" style="zoom:50%;" />
+<img src="./img/img3_0_9.png" alt="image-20230905161958548" style="zoom:50%;" />
 <h3 id="与linux及其他os的对比"><a class="header" href="#与linux及其他os的对比">与Linux及其他OS的对比</a></h3>
 <h3 id="设计思想和特殊考虑"><a class="header" href="#设计思想和特殊考虑">设计思想和特殊考虑</a></h3>
 <h3 id="小练习"><a class="header" href="#小练习">小练习</a></h3>
