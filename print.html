@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00.html"><strong aria-hidden="true">4.</strong> 第四章 内存管理</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01.html"><strong aria-hidden="true">4.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch04-02.html"><strong aria-hidden="true">4.2.</strong> 本章实践与总结</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -564,13 +564,6 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </li>
 </ul>
 </li>
-<li>
-<h4 id="allocator-"><a class="header" href="#allocator-"><code>allocator</code> ：</a></h4>
-<ul>
-<li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/crates/allocator">crates/allocator</a></li>
-<li>模块描述： <code>allocator</code> 模块提供了一个统一的接口，用于实现不同类型的内存分配器算法。该模块共包括三种不同类型的分配器：字节粒度内存分配器 (<code>ByteAllocator</code>)、页粒度内存分配器 (<code>PageAllocator</code>) 和唯一 ID 分配器 (<code>IdAllocator</code>)。每种分配器都有其特定的实现方式，例如 <code>BuddyByteAllocator</code> 和 <code>SlabByteAllocator</code> 对应的是字节粒度内存分配器，而 <code>BitmapPageAllocator</code> 对应的是页粒度内存分配器。这个模块使得不同的内存分配器可以更加灵活地组合和替换，实现更加高效和可靠的内存管理功能。</li>
-</ul>
-</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结"><a class="header" href="#本章实践与总结">本章实践与总结</a></h2>
 <h3 id="练习"><a class="header" href="#练习">练习</a></h3>
@@ -586,6 +579,127 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <p>v0.1 建立最基本的框架：核心组件axhal、axruntime、api、ulib以及上层应用组件。</p>
 <p>后续版本在该基本框架的基础上，通过扩展功能组件(虚线部分)，扩展OS能力特性。</p>
 <img src="./img/img3_10.png" alt="image-20230907105509230" style="zoom:50%;" />
+<div style="break-before: page; page-break-before: always;"></div><h2 id="内存管理"><a class="header" href="#内存管理">内存管理</a></h2>
+<h3 id="目标-1"><a class="header" href="#目标-1">目标</a></h3>
+<ol>
+<li>物理内存布局</li>
+<li>分页功能</li>
+<li>内存分配框架和初始化</li>
+<li>内存分配算法 tlsf, buddy, slab。</li>
+</ol>
+<p><img src="./img/img4_1.png" alt="image-20230908093104691" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="设计与实现-1"><a class="header" href="#设计与实现-1">设计与实现</a></h2>
+<h3 id="物理内存布局"><a class="header" href="#物理内存布局">物理内存布局</a></h3>
+<img src="./img/img4_2.png" alt="image4-2" style="zoom:50%;" />
+<h3 id="分页--功能抽象和对应组件"><a class="header" href="#分页--功能抽象和对应组件">分页 – 功能抽象和对应组件</a></h3>
+<img src="./img/img4_3.png" alt="image4_3" style="zoom:50%;" />
+<p>分页启用分两个阶段：早期启用(必须)和后期重建映射(可选) 。</p>
+<h4 id="分页阶段1--早期启用必须"><a class="header" href="#分页阶段1--早期启用必须">分页阶段1 – 早期启用(必须)</a></h4>
+<h5 id="机制"><a class="header" href="#机制">机制</a></h5>
+<p>内核启动的早期，采用规定的恒等映射方式。但是只映射一部分物理空间。</p>
+<p>目标：完成Paging切换后，建立从虚拟空间0xffff_ffc0_8000_0000 ~ 0xffff_ffc0_8000_0000到物理空间0x8000_0000~0xC000_0000 的映射，范围1G。</p>
+<p><strong>两步完成Paging切换：</strong></p>
+<ol>
+<li>恒等映射保证虚拟空间与物理空间有一个相等范围的地址空间映射(0x80000000~0xC0000000)。切换前后地址范围不变，但地址空间已经从物理空间切换到虚拟空间；</li>
+<li>给指令指针寄存器pc，栈寄存器sp等加偏移，在图中该偏移是0xffff_ffc0_0000_0000。如此在虚拟空间执行平移后，就完成到最终目标地址的映射。</li>
+</ol>
+<img src="./img/img4_4.png" alt="image4_4" style="zoom:50%;" />
+<h5 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h5>
+<img src="./img/img4_5.png" alt="image4_5" style="zoom:50%;" />
+<p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
+<img src="./img/img4_6.png" alt="image4_6" style="zoom:50%;" />
+<p>初始化根页表BOOT_PT_SV39，只有一级，即每个页表项直接映射到1G的地址空间。1G = 230 因此pgd_idx = (VA&gt;&gt;30)&amp;(512-1)0x8000_0000 &gt;&gt; 30，对应pgd_idx = 20xffff_ffc0_8000_0000 &gt;&gt; 30，只保留低9位，对应pgd_idx = 0x102物理页帧号 = 物理地址 &gt;&gt; 12，故0x80000。</p>
+<h4 id="分页阶段2--重建映射可选"><a class="header" href="#分页阶段2--重建映射可选">分页阶段2 – 重建映射(可选)</a></h4>
+<h5 id="机制-1"><a class="header" href="#机制-1">机制</a></h5>
+<p>重建映射的意义：</p>
+<ol>
+<li>管理更大范围的地址空间</li>
+<li>分类和权限的粒度控制更加细致</li>
+</ol>
+<p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
+<img src="./img/img4_7.png" alt="image4_7" style="zoom:50%;" />
+<h5 id="代码示例-1"><a class="header" href="#代码示例-1">代码示例</a></h5>
+<img src="./img/img4_8.png" alt="image4_8" style="zoom:50%;" />
+<h3 id="内存分配"><a class="header" href="#内存分配">内存分配</a></h3>
+<h4 id="接口框架与算法"><a class="header" href="#接口框架与算法">接口、框架与算法</a></h4>
+<img src="./img/img4_9.png" alt="image4_9" style="zoom:50%;" />
+<h4 id="接口和数据结构"><a class="header" href="#接口和数据结构">接口和数据结构</a></h4>
+<img src="./img/img4_10.png" alt="image4_10" style="zoom:50%;" />
+<h4 id="框架初始化"><a class="header" href="#框架初始化">框架初始化</a></h4>
+<img src="./img/img4_11.png" alt="image4_11" style="zoom:50%;" />
+<img src="./img/img4_12.png" alt="image4_12" style="zoom:50%;" />
+<h4 id="算法组件接口"><a class="header" href="#算法组件接口">算法组件接口</a></h4>
+<img src="./img/img4_13.png" alt="image4_13" style="zoom:50%;" />
+<img src="./img/img4_14.png" alt="image4_14" style="zoom:50%;" />
+<h4 id="内存分配算法"><a class="header" href="#内存分配算法">内存分配算法</a></h4>
+<h5 id="tlsf-two-level-segregated-fit"><a class="header" href="#tlsf-two-level-segregated-fit">TLSF (Two-Level Segregated Fit)</a></h5>
+<p>两级 bitmap+List 管理空闲块</p>
+<p>bitmap 第一级 First Level：每一位对应一个范围的内存块，示例中分别对应24 ~ 231。1表示空闲。图中两个1。</p>
+<p>bitmap 第二级 Second Leve：有几位就表示几等分。例如， 2^6^ 表示 64~127，然后进行 4 等分，就是 64~79, 80~95, 96~107, 108~127，每一位对应一个范围，同样1表示空闲。</p>
+<p>然后就能找到包含对应范围大小的空闲块链表List。链表耗尽或者新建时，对应维护两级bitmap。</p>
+<p><a href="http://www.gii.upv.es/tlsf/files/ecrts04_tlsf.pdf">算法论文链接</a></p>
+<img src="./img/img4_15.png" alt="image-20230908163833490" style="zoom:50%;" />
+<h5 id="buddy"><a class="header" href="#buddy">Buddy</a></h5>
+<p>分配单元 Unit：一般不会采用1字节，通常8，16，32…字节。</p>
+<p>分配：寻找匹配 alloc 需要（order）的最小块如果 order 大于目标，则二分切割，直至相等，每级剩余的部分挂到对应的 Order List；</p>
+<p>释放：查看是否有邻居空闲块，有则尽可能向高 Oder 合并，直至无法合并，挂到 OrderList。</p>
+<img src="./img/img4_16.png" alt="image-20230908164413949" style="zoom:50%;" />
+<h5 id="slab"><a class="header" href="#slab">Slab</a></h5>
+<p>结构：</p>
+<ol>
+<li>通过OrderList维护一系列Slab</li>
+<li>Slab维持一个空闲的block链表</li>
+</ol>
+<p>分配：</p>
+<p>从block空闲链表中弹出一个block。依靠BuddyAllocator提供内存分配支持，初始时以及block不足时，从BuddyAllocator申请，分割block后加入block空闲链表。</p>
+<p>释放：</p>
+<p>放回block空闲链表。</p>
+<img src="./img/img4_17.png" alt="image-20230908164609352" style="zoom:50%;" />
+<h3 id="附录-相关组件-1"><a class="header" href="#附录-相关组件-1">附录 相关组件</a></h3>
+<ul>
+<li>
+<h4 id="allocator-"><a class="header" href="#allocator-"><code>allocator</code> ：</a></h4>
+<ul>
+<li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/crates/allocator">crates/allocator</a></li>
+<li>模块描述： <code>allocator</code> 模块提供了一个统一的接口，用于实现不同类型的内存分配器算法。该模块共包括三种不同类型的分配器：字节粒度内存分配器 (<code>ByteAllocator</code>)、页粒度内存分配器 (<code>PageAllocator</code>) 和唯一 ID 分配器 (<code>IdAllocator</code>)。每种分配器都有其特定的实现方式，例如 <code>BuddyByteAllocator</code> 和 <code>SlabByteAllocator</code> 对应的是字节粒度内存分配器，而 <code>BitmapPageAllocator</code> 对应的是页粒度内存分配器。这个模块使得不同的内存分配器可以更加灵活地组合和替换，实现更加高效和可靠的内存管理功能。</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结-1"><a class="header" href="#本章实践与总结-1">本章实践与总结</a></h2>
+<h3 id="练习-1"><a class="header" href="#练习-1">练习</a></h3>
+<p>待完善</p>
+<h3 id="实验-1"><a class="header" href="#实验-1">实验</a></h3>
+<p>题目：针对字节内存分配，增加一个新的内存分配算法</p>
+<p>要求：只能修改 crates/allocator/src/simple.rs，修改其中的数据结构和填充相关函数，执行 verify 脚本验证 a1 通过。</p>
+<p>提示：</p>
+<ol>
+<li>可以参考现有的 tlsf，slab 等算法；或者其它了解的算法。</li>
+<li>提供一个 Bump 算法(最简版本)，供参考。
+<ul>
+<li>关键数据成员: next 指针总是指向空闲区开始位置，计数 allocations 记录已经分配的次数；</li>
+<li>申请内存: 移动 next 位置指针， allocations 加一，返回移动前的 next；</li>
+<li>释放内存: allocations 减一。如果归零，复位 next 到起始位置；</li>
+<li>需要检查，分配和释放是否越界。</li>
+</ul>
+</li>
+</ol>
+<img src="./img/img4_18.png" alt="image-20230908165138488" style="zoom:50%;" />
+<h3 id="总结-1"><a class="header" href="#总结-1">总结</a></h3>
+<p>v0.2 内存管理框架与功能：</p>
+<ol>
+<li>
+<p>内存分配功能</p>
+<ul>
+<li>内含两类分配器，字节分配器和页分配器；</li>
+<li>框架与算法分离，松耦合支持多种内存分配算法。</li>
+</ul>
+</li>
+<li>
+<p>分页功能</p>
+</li>
+</ol>
+<p>启动早期基于静态恒等映射完成分页切换，如果指定 paging feature 则会在启动后期重新建立范围更大，权限控制更细的映射。</p>
+<img src="./img/img4_19.png" alt="image-20230908165439924" style="zoom:50%;" />
 
                     </main>
 

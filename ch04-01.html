@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>验证环境 - ArceOS Tutorial Book</title>
+        <title>设计与实现 - ArceOS Tutorial Book</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html" class="active"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00.html"><strong aria-hidden="true">4.</strong> 第四章 内存管理</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01.html"><strong aria-hidden="true">4.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch04-02.html"><strong aria-hidden="true">4.2.</strong> 本章实践与总结</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00.html"><strong aria-hidden="true">4.</strong> 第四章 内存管理</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01.html" class="active"><strong aria-hidden="true">4.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch04-02.html"><strong aria-hidden="true">4.2.</strong> 本章实践与总结</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,56 +169,93 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="验证环境"><a class="header" href="#验证环境">验证环境</a></h2>
-<p>本节介绍如何验证实验环境配置的正确与否。</p>
+                        <h2 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h2>
+<h3 id="物理内存布局"><a class="header" href="#物理内存布局">物理内存布局</a></h3>
+<img src="./img/img4_2.png" alt="image4-2" style="zoom:50%;" />
+<h3 id="分页--功能抽象和对应组件"><a class="header" href="#分页--功能抽象和对应组件">分页 – 功能抽象和对应组件</a></h3>
+<img src="./img/img4_3.png" alt="image4_3" style="zoom:50%;" />
+<p>分页启用分两个阶段：早期启用(必须)和后期重建映射(可选) 。</p>
+<h4 id="分页阶段1--早期启用必须"><a class="header" href="#分页阶段1--早期启用必须">分页阶段1 – 早期启用(必须)</a></h4>
+<h5 id="机制"><a class="header" href="#机制">机制</a></h5>
+<p>内核启动的早期，采用规定的恒等映射方式。但是只映射一部分物理空间。</p>
+<p>目标：完成Paging切换后，建立从虚拟空间0xffff_ffc0_8000_0000 ~ 0xffff_ffc0_8000_0000到物理空间0x8000_0000~0xC000_0000 的映射，范围1G。</p>
+<p><strong>两步完成Paging切换：</strong></p>
 <ol>
-<li>
-<p>执行如下命令，获取 ArceOS 源码包：</p>
-<p><code>git clone https://github.com/rcore-os/arceos.git</code></p>
-</li>
-<li>
-<p>进入arceos目录，执行如下命令，编译并运行 helloworld unikernel：</p>
-<p><code>make ARCH=riscv64 A=apps/helloworld run</code></p>
-<p>其中，</p>
-<p>ARCH 指定 CPU 体系架构，目前支持选项：<code>riscv64</code>, <code>aarch64</code>，<code>x86_64</code>。</p>
-<p>A 指定用户程序的相对路径。</p>
-</li>
+<li>恒等映射保证虚拟空间与物理空间有一个相等范围的地址空间映射(0x80000000~0xC0000000)。切换前后地址范围不变，但地址空间已经从物理空间切换到虚拟空间；</li>
+<li>给指令指针寄存器pc，栈寄存器sp等加偏移，在图中该偏移是0xffff_ffc0_0000_0000。如此在虚拟空间执行平移后，就完成到最终目标地址的映射。</li>
 </ol>
-<p><img src="./img/2_2.png" alt="image-20230712163420462" /></p>
-<p>到这里，恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！</p>
-<h3 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h3>
-<p>当代码跑不起来的时候，可以尝试：</p>
+<img src="./img/img4_4.png" alt="image4_4" style="zoom:50%;" />
+<h5 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h5>
+<img src="./img/img4_5.png" alt="image4_5" style="zoom:50%;" />
+<p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
+<img src="./img/img4_6.png" alt="image4_6" style="zoom:50%;" />
+<p>初始化根页表BOOT_PT_SV39，只有一级，即每个页表项直接映射到1G的地址空间。1G = 230 因此pgd_idx = (VA&gt;&gt;30)&amp;(512-1)0x8000_0000 &gt;&gt; 30，对应pgd_idx = 20xffff_ffc0_8000_0000 &gt;&gt; 30，只保留低9位，对应pgd_idx = 0x102物理页帧号 = 物理地址 &gt;&gt; 12，故0x80000。</p>
+<h4 id="分页阶段2--重建映射可选"><a class="header" href="#分页阶段2--重建映射可选">分页阶段2 – 重建映射(可选)</a></h4>
+<h5 id="机制-1"><a class="header" href="#机制-1">机制</a></h5>
+<p>重建映射的意义：</p>
+<ol>
+<li>管理更大范围的地址空间</li>
+<li>分类和权限的粒度控制更加细致</li>
+</ol>
+<p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
+<img src="./img/img4_7.png" alt="image4_7" style="zoom:50%;" />
+<h5 id="代码示例-1"><a class="header" href="#代码示例-1">代码示例</a></h5>
+<img src="./img/img4_8.png" alt="image4_8" style="zoom:50%;" />
+<h3 id="内存分配"><a class="header" href="#内存分配">内存分配</a></h3>
+<h4 id="接口框架与算法"><a class="header" href="#接口框架与算法">接口、框架与算法</a></h4>
+<img src="./img/img4_9.png" alt="image4_9" style="zoom:50%;" />
+<h4 id="接口和数据结构"><a class="header" href="#接口和数据结构">接口和数据结构</a></h4>
+<img src="./img/img4_10.png" alt="image4_10" style="zoom:50%;" />
+<h4 id="框架初始化"><a class="header" href="#框架初始化">框架初始化</a></h4>
+<img src="./img/img4_11.png" alt="image4_11" style="zoom:50%;" />
+<img src="./img/img4_12.png" alt="image4_12" style="zoom:50%;" />
+<h4 id="算法组件接口"><a class="header" href="#算法组件接口">算法组件接口</a></h4>
+<img src="./img/img4_13.png" alt="image4_13" style="zoom:50%;" />
+<img src="./img/img4_14.png" alt="image4_14" style="zoom:50%;" />
+<h4 id="内存分配算法"><a class="header" href="#内存分配算法">内存分配算法</a></h4>
+<h5 id="tlsf-two-level-segregated-fit"><a class="header" href="#tlsf-two-level-segregated-fit">TLSF (Two-Level Segregated Fit)</a></h5>
+<p>两级 bitmap+List 管理空闲块</p>
+<p>bitmap 第一级 First Level：每一位对应一个范围的内存块，示例中分别对应24 ~ 231。1表示空闲。图中两个1。</p>
+<p>bitmap 第二级 Second Leve：有几位就表示几等分。例如， 2^6^ 表示 64~127，然后进行 4 等分，就是 64~79, 80~95, 96~107, 108~127，每一位对应一个范围，同样1表示空闲。</p>
+<p>然后就能找到包含对应范围大小的空闲块链表List。链表耗尽或者新建时，对应维护两级bitmap。</p>
+<p><a href="http://www.gii.upv.es/tlsf/files/ecrts04_tlsf.pdf">算法论文链接</a></p>
+<img src="./img/img4_15.png" alt="image-20230908163833490" style="zoom:50%;" />
+<h5 id="buddy"><a class="header" href="#buddy">Buddy</a></h5>
+<p>分配单元 Unit：一般不会采用1字节，通常8，16，32…字节。</p>
+<p>分配：寻找匹配 alloc 需要（order）的最小块如果 order 大于目标，则二分切割，直至相等，每级剩余的部分挂到对应的 Order List；</p>
+<p>释放：查看是否有邻居空闲块，有则尽可能向高 Oder 合并，直至无法合并，挂到 OrderList。</p>
+<img src="./img/img4_16.png" alt="image-20230908164413949" style="zoom:50%;" />
+<h5 id="slab"><a class="header" href="#slab">Slab</a></h5>
+<p>结构：</p>
+<ol>
+<li>通过OrderList维护一系列Slab</li>
+<li>Slab维持一个空闲的block链表</li>
+</ol>
+<p>分配：</p>
+<p>从block空闲链表中弹出一个block。依靠BuddyAllocator提供内存分配支持，初始时以及block不足时，从BuddyAllocator申请，分割block后加入block空闲链表。</p>
+<p>释放：</p>
+<p>放回block空闲链表。</p>
+<img src="./img/img4_17.png" alt="image-20230908164609352" style="zoom:50%;" />
+<h3 id="附录-相关组件"><a class="header" href="#附录-相关组件">附录 相关组件</a></h3>
 <ul>
-<li>分支是否与 原版仓库（而非 fork 出来的仓库）的对应分支同步。如不同步的话考虑通过 <code>git pull</code> 进行更新。注：这是因为 Rust 的版本更迭较快，如不及时更新的话曾经能正常运行的代码也会无法运行。</li>
-<li>项目根目录下的 <code>rust-toolchain</code> 非常重要，它代表整个项目采用的 Rust 工具链版本。请务必保持其与原版仓库对应分支一致。</li>
-<li>通过 <code>make clean</code> 或者 <code>cargo clean</code> 删除构建产物，并重新 <code>make run</code> 。注：出现这样的问题通常说明框架的构建脚本存在 bug，可以提 issue。</li>
-</ul>
-<p>如果怀疑遇到了网络问题，可以检查：</p>
+<li>
+<h4 id="allocator-"><a class="header" href="#allocator-"><code>allocator</code> ：</a></h4>
 <ul>
-<li>请按照本章说明进行 Rust 安装和 crates.io 镜像配置。通常情况下能够解决 Rust 工具链更新和下载已发布到 crates.io 上库的问题。</li>
+<li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/crates/allocator">crates/allocator</a></li>
+<li>模块描述： <code>allocator</code> 模块提供了一个统一的接口，用于实现不同类型的内存分配器算法。该模块共包括三种不同类型的分配器：字节粒度内存分配器 (<code>ByteAllocator</code>)、页粒度内存分配器 (<code>PageAllocator</code>) 和唯一 ID 分配器 (<code>IdAllocator</code>)。每种分配器都有其特定的实现方式，例如 <code>BuddyByteAllocator</code> 和 <code>SlabByteAllocator</code> 对应的是字节粒度内存分配器，而 <code>BitmapPageAllocator</code> 对应的是页粒度内存分配器。这个模块使得不同的内存分配器可以更加灵活地组合和替换，实现更加高效和可靠的内存管理功能。</li>
 </ul>
-<!--
-- 如果发现在试图从 github 上下载下述几个库的时候卡死，可以修改 `arceos` 目录下的 `Cargo.toml` 替换为 gitee 上的镜像。例如，将：
+</li>
+</ul>
 
-  > ```toml
-  > riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
-  > ```
-  
-  替换为：
-  
-  > ```toml
-  > riscv = { git = "https://gitee.com/rcore-os/riscv", features = ["inline-asm"] }
-  > ```
--->
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="ch02-04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch04-00.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="ch03-00.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="ch04-02.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -228,11 +265,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="ch02-04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="ch04-00.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="ch03-00.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="ch04-02.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
