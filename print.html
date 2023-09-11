@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00.html"><strong aria-hidden="true">4.</strong> 第四章 内存管理</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01.html"><strong aria-hidden="true">4.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch04-02.html"><strong aria-hidden="true">4.2.</strong> 本章实践与总结</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">ArceOS Tutorial Book</a></li><li class="chapter-item expanded "><a href="ch01-00.html"><strong aria-hidden="true">1.</strong> 第一章 概述</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01.html"><strong aria-hidden="true">1.1.</strong> 操作系统概述</a></li><li class="chapter-item expanded "><a href="ch01-02.html"><strong aria-hidden="true">1.2.</strong> ArceOS 概述</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00.html"><strong aria-hidden="true">2.</strong> 第二章 实验设计与准备</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-01.html"><strong aria-hidden="true">2.1.</strong> OS 环境配置</a></li><li class="chapter-item expanded "><a href="ch02-02.html"><strong aria-hidden="true">2.2.</strong> Rust 开发环境配置</a></li><li class="chapter-item expanded "><a href="ch02-03.html"><strong aria-hidden="true">2.3.</strong> Qemu 模拟器安装</a></li><li class="chapter-item expanded "><a href="ch02-04.html"><strong aria-hidden="true">2.4.</strong> 其他工具安装</a></li><li class="chapter-item expanded "><a href="ch02-05.html"><strong aria-hidden="true">2.5.</strong> 验证环境</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00.html"><strong aria-hidden="true">3.</strong> 第三章 Hello,ArceOS</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01.html"><strong aria-hidden="true">3.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch03-02.html"><strong aria-hidden="true">3.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00.html"><strong aria-hidden="true">4.</strong> 第四章 内存管理</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01.html"><strong aria-hidden="true">4.1.</strong> 设计与实现</a></li><li class="chapter-item expanded "><a href="ch04-02.html"><strong aria-hidden="true">4.2.</strong> 本章实践与总结</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00.html"><strong aria-hidden="true">5.</strong> 第五章 任务调度</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01.html"><strong aria-hidden="true">5.1.</strong> 建立通用调度框架</a></li><li class="chapter-item expanded "><a href="ch05-02.html"><strong aria-hidden="true">5.2.</strong> 协作式调度机制与示例</a></li><li class="chapter-item expanded "><a href="ch05-03.html"><strong aria-hidden="true">5.3.</strong> 抢占式调度机制与示例</a></li><li class="chapter-item expanded "><a href="ch05-04.html"><strong aria-hidden="true">5.4.</strong> 本章实践与总结</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -700,6 +700,130 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </ol>
 <p>启动早期基于静态恒等映射完成分页切换，如果指定 paging feature 则会在启动后期重新建立范围更大，权限控制更细的映射。</p>
 <img src="./img/img4_19.png" alt="image-20230908165439924" style="zoom:50%;" />
+<div style="break-before: page; page-break-before: always;"></div><h2 id="任务调度"><a class="header" href="#任务调度">任务调度</a></h2>
+<h3 id="目标-2"><a class="header" href="#目标-2">目标</a></h3>
+<ol>
+<li>任务和任务状态</li>
+<li>通用调度框架和初始化</li>
+<li>系统内置任务idle, main和gc</li>
+<li>协作式调度机制和示例</li>
+<li>抢占式调度与协作式区别</li>
+<li>抢占式调度框架实现</li>
+<li>抢占式调度算法：sched_rr &amp; sched_cfs</li>
+</ol>
+<h3 id="概念"><a class="header" href="#概念">概念</a></h3>
+<p><strong>任务：</strong> 被调度的对象，具有独立工作逻辑。</p>
+<p><strong>调度：</strong> 资源相对于使用者通常是不足的，调度就是用来协调每个请求对资源的使用的方法。</p>
+<p><strong>任务调度：</strong> 协调可执行任务对 CPU资源 的使用。</p>
+<p><strong>协作式调度：</strong> 任务之间通过“友好”协作方式分享CPU资源。具体的，当前任务是否让出和何时让出CPU控制权完全由当前任务自己决定。</p>
+<p><strong>抢占式调度：</strong> 调度器依据策略，可以打断当前任务的执行，移交CPU执行权给当前“更”有资格 的任务。抢占机制的根本保障是系统定时器。</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="51-建立通用调度框架"><a class="header" href="#51-建立通用调度框架">5.1 建立通用调度框架</a></h2>
+<h3 id="511-任务"><a class="header" href="#511-任务">5.1.1 任务</a></h3>
+<h4 id="一任务状态"><a class="header" href="#一任务状态">一、任务状态</a></h4>
+<p><img src="img/img5_1.png" alt="image-20230911094606238" /></p>
+<h4 id="二任务数据结构"><a class="header" href="#二任务数据结构">二、任务数据结构</a></h4>
+<img src="./img/img5_2.png" alt="image-20230911094724468" style="zoom:50%;" />
+<h3 id="512-通用调度框架和初始化"><a class="header" href="#512-通用调度框架和初始化">5.1.2 通用调度框架和初始化</a></h3>
+<h4 id="一通用调度框架"><a class="header" href="#一通用调度框架">一、通用调度框架</a></h4>
+<p>框架支持协作式和抢占式调度。其中，标红的两处：</p>
+<ul>
+<li>当前任务是操作的焦点；</li>
+<li>TaskContext.switch_to 是任务切换的关键。</li>
+</ul>
+<img src="./img/img5_3.png" alt="image-20230911095148916" style="zoom:50%;" />
+<h4 id="二接口---主要调度api"><a class="header" href="#二接口---主要调度api">二、接口 - 主要调度API</a></h4>
+<p>接口公开的是 runqueue 的对应方法：</p>
+<ul>
+<li>spawn&amp;spawn_raw：产生一个新任务，加入 runqueue，处于 Ready；</li>
+<li>yield_now (协作式调度的关键)：主动让出 CPU 执行权；</li>
+<li>sleep&amp;sleep_until：(1)睡眠固定的时间后醒来；(2)在 timers 定时器列表中注册，等待唤醒；</li>
+<li>exit：当前任务退出，标记状态，等待 GC 回收。</li>
+</ul>
+<h4 id="三调度框架初始化"><a class="header" href="#三调度框架初始化">三、调度框架初始化</a></h4>
+<img src="./img/img5_4.png" alt="image-20230911100020690" style="zoom:50%;" />
+<h4 id="四核心算法context_switch"><a class="header" href="#四核心算法context_switch">四、核心算法：context_switch</a></h4>
+<p>任务上下文 Context：保存任务状态的最小的寄存器状态集合。</p>
+<p>下图是理解上下文切换的两个角度：</p>
+<img src="./img/img5_5.png" alt="image-20230911100211501" style="zoom:50%;" />
+<h4 id="五上下文-context-包含寄存器"><a class="header" href="#五上下文-context-包含寄存器">五、上下文 Context 包含寄存器:</a></h4>
+<ul>
+<li>ra:：函数返回地址寄存器，这个切换实现了任务执行指令流的切换；</li>
+<li>sp：任务即线程，这个是线程栈；</li>
+<li>s0~s11：按照 riscv 规范，callee 不能改这组寄存器的信息，所以需要保存。</li>
+</ul>
+<img src="./img/img5_6.png" alt="image-20230911100633263" style="zoom:50%;" />
+<h3 id="513-系统内置任务idle-main和gc"><a class="header" href="#513-系统内置任务idle-main和gc">5.1.3 系统内置任务idle, main和gc</a></h3>
+<img src="./img/img5_7.png" alt="image-20230911101154789" style="zoom:50%;" />
+<div style="break-before: page; page-break-before: always;"></div><h2 id="52-协作式调度机制与示例"><a class="header" href="#52-协作式调度机制与示例">5.2 协作式调度机制与示例</a></h2>
+<h3 id="521-协作式调度算法-fifo-机制"><a class="header" href="#521-协作式调度算法-fifo-机制">5.2.1 协作式调度算法 FIFO 机制</a></h3>
+<ul>
+<li>
+<p>任务按照先入先出的顺序被 CPU 执行；</p>
+</li>
+<li>
+<p>当前任务一旦获得执行权，就会一直执行；</p>
+</li>
+<li>
+<p>只有两种情况下，其它任务才能获得执行机会：</p>
+<ul>
+<li>
+<p>当前任务执行完成后退出；</p>
+</li>
+<li>
+<p>当前任务主动调用 yield_now 让出执行权。</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="./img/img5_8.png" alt="image-20230911105017007" style="zoom:50%;" />
+<h3 id="522-协作式调度算法fifo实现"><a class="header" href="#522-协作式调度算法fifo实现">5.2.2 协作式调度算法FIFO实现</a></h3>
+<img src="./img/img5_9.png" alt="image-20230911105143268" style="zoom:50%;" />
+<div style="break-before: page; page-break-before: always;"></div><h2 id="53-抢占式调度机制与示例"><a class="header" href="#53-抢占式调度机制与示例">5.3 抢占式调度机制与示例</a></h2>
+<h3 id="531-抢占式调度与协作式在框架上的区别"><a class="header" href="#531-抢占式调度与协作式在框架上的区别">5.3.1 抢占式调度与协作式在框架上的区别</a></h3>
+<p>抢占式调度在协作式自主 yield 的基础上，通过加入时钟中断，确保个别任务不会长期不合理的占据 CPU。</p>
+<img src="./img/img5_10.png" alt="image-20230911105410138" style="zoom:50%;" />
+<h3 id="532-时钟中断与抢占式调度"><a class="header" href="#532-时钟中断与抢占式调度">5.3.2 时钟中断与抢占式调度</a></h3>
+<img src="./img/img5_11.png" alt="image-20230911105602764" style="zoom:50%;" />
+<h3 id="533-抢占式调度算法-round_robin"><a class="header" href="#533-抢占式调度算法-round_robin">5.3.3 抢占式调度算法 ROUND_ROBIN</a></h3>
+<p>在协作式调度 FIFO 的基础上，由定时器定时递减<font color=red>当前任务</font>的时间片，耗尽时排到队尾，如此完成各个任务的循环排列。</p>
+<blockquote>
+<p><font color=blue><strong>注👉</strong></font> 
+注意，各个scheduler操作的核心目标都是当前任务。</p>
+</blockquote>
+<img src="./img/img5_12.png" alt="image-20230911105814589" style="zoom:50%;" />
+<img src="./img/img5_13.png" alt="image-20230911110533751" style="zoom:50%;" />
+<h3 id="534-抢占式调度算法-cfscompletely-fair-scheduler"><a class="header" href="#534-抢占式调度算法-cfscompletely-fair-scheduler">5.3.4 抢占式调度算法 CFS(Completely Fair Scheduler)</a></h3>
+<p>当前 vruntime 最小的任务就是当前任务。计算公式：
+$$
+vruntime = init_vruntime + (delta / weight(nice))
+$$
+系统初始化时，init_vruntime, delta, nice 三者都是 0</p>
+<img src="./img/img5_14.png" alt="image-20230911110718949" style="zoom:50%;" />
+<img src="./img/img5_15.png" alt="image-20230911110817258" style="zoom:50%;" />
+<img src="./img/img5_16.png" alt="image-20230911110905924" style="zoom:50%;" />
+<div style="break-before: page; page-break-before: always;"></div><h1 id="54-本章实践与总结"><a class="header" href="#54-本章实践与总结">5.4 本章实践与总结</a></h1>
+<h3 id="541-练习"><a class="header" href="#541-练习">5.4.1 练习</a></h3>
+<p>待完善</p>
+<h3 id="542-实验"><a class="header" href="#542-实验">5.4.2 实验</a></h3>
+<h4 id="实验1"><a class="header" href="#实验1">实验1</a></h4>
+<p>题目：把协作式调度算法改造为抢占式调度算法。</p>
+<p>要求：只能修改crates/scheduler/src/simple.rs，修改其中的数据结构和填充相关函数，执行verify脚本验证a2通过。</p>
+<p>提示：</p>
+<ul>
+<li>可以参考现有的sched_rr或sched_cfs等算法；或者其它了解的算法。</li>
+<li>重点是发挥task_tick方法的作用。</li>
+</ul>
+<h4 id="实验2"><a class="header" href="#实验2">实验2</a></h4>
+<p>题目：支持ramfs的rename操作。</p>
+<p>要求：只能修改crates/axfs_ramfs/src/dir.rs，增加相关函数，实现部分trait，执行verify脚本验证a3通过。</p>
+<p>提示：无</p>
+<h3 id="543-总结"><a class="header" href="#543-总结">5.4.3 总结</a></h3>
+<p>通过本章学习，建立了基础的调度框架，引入三个系统任务辅助任务管理。目前可以基于最简单的协作式和抢占式调度算法，支持多任务。</p>
+<blockquote>
+<p><font color=blue><strong>注👉</strong></font></p>
+<p>注意，ArceOS 的抢占式调度与 Linux 所说的”抢占”有概念上的区别。</p>
+</blockquote>
+<img src="./img/img5_17.png" alt="image-20230911113912689" style="zoom:50%;" />
 
                     </main>
 
