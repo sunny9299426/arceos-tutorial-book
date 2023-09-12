@@ -175,17 +175,17 @@
 <p>本教程假设读者了解操作系统基本概念和原理，具有常用的 Linux 系统使用经验，并且会使用 Rust 语言编写简单程序。
 如果读者不熟悉操作系统和 Rust 语言，希望以自底向上方法从零构建操作系统，[rCore Tutorial Book v3] 可能是更好的选择。</p>
 <p>如果你准备好了，让我们开始吧！</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="概述"><a class="header" href="#概述">概述</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第一章-概述"><a class="header" href="#第一章-概述">第一章 概述</a></h1>
 <p>本教程编写的思路与目标：实验结合理论</p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="操作系统概述"><a class="header" href="#操作系统概述">操作系统概述</a></h2>
-<h3 id="os-在计算机体系结构中的位置和作用"><a class="header" href="#os-在计算机体系结构中的位置和作用">OS 在计算机体系结构中的位置和作用</a></h3>
-<h3 id="os-的主要模式"><a class="header" href="#os-的主要模式">OS 的主要模式</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="操作系统概述"><a class="header" href="#操作系统概述">操作系统概述</a></h1>
+<h2 id="os-在计算机体系结构中的位置和作用"><a class="header" href="#os-在计算机体系结构中的位置和作用">OS 在计算机体系结构中的位置和作用</a></h2>
+<h2 id="os-的主要模式"><a class="header" href="#os-的主要模式">OS 的主要模式</a></h2>
 <p>操作系统内核是计算机系统的核心，负责管理硬件资源，包括处理器、内存、磁盘存储等，并为运行在操作系统上的应用程序提供一组接口（系统调用）来访问这些资源。操作系统内核架构是指操作系统内核设计和实现的方式。以下是几种常见的操作系统内核架构：</p>
-<h4 id="宏内核monolithic-kernel"><a class="header" href="#宏内核monolithic-kernel">宏内核（Monolithic Kernel）</a></h4>
+<h3 id="宏内核monolithic-kernel"><a class="header" href="#宏内核monolithic-kernel">宏内核（Monolithic Kernel）</a></h3>
 <p>宏内核将操作系统的所有服务，如设备驱动、文件系统、网络协议栈和进程调度等都集成在一个大的内核中，运行在内核空间。这种设计使得各个模块可以直接相互通信，因此性能较好。然而，宏内核的缺点是任何一个故障都可能导致整个系统崩溃。另外，由于所有模块都紧密耦合在一起，修改或添加功能也比较困难。Linux 和 UNIX 就是采用宏内核设计的例子。</p>
-<h4 id="微内核micro-kernel"><a class="header" href="#微内核micro-kernel">微内核（Micro Kernel）</a></h4>
+<h3 id="微内核micro-kernel"><a class="header" href="#微内核micro-kernel">微内核（Micro Kernel）</a></h3>
 <p>微内核只保留最基本的、必要的服务在内核空间，如进程间通信、内存管理和基本的I/O操作等，其他高级服务例如设备驱动、文件系统等都运行在用户空间。这样的设计使得系统更加稳定，因为即使一个服务出现故障也不会影响到整个系统，同时也使得系统更易于维护和扩展。但在性能方面，由于需要频繁地进行用户空间与内核空间之间的上下文切换，微内核的性能通常低于宏内核。Minix 和 QNX 是采用微内核设计的例子。</p>
-<h4 id="单内核unikernel"><a class="header" href="#单内核unikernel">单内核（Unikernel）</a></h4>
+<h3 id="单内核unikernel"><a class="header" href="#单内核unikernel">单内核（Unikernel）</a></h3>
 <p>单内核是一种新兴的内核架构，它将应用程序和内核捆绑在一起形成一个单一的可执行映像，该映像可以直接运行在虚拟机或裸机上。单内核适用于云计算和物联网环境，它的优点是体积小，启动快，但对开发者的编程要求较高。单内核（Unikernel）架构有如下特点:</p>
 <ol>
 <li>
@@ -211,9 +211,9 @@
 <tr><td>代表系统</td><td>ArceOS、Unikraft、MirageOS、IncludeOS</td><td>QNX、MINIX、L4微内核系列</td><td>Linux、Windows</td></tr>
 </tbody></table>
 </div><img src="./img/img1_3.png" alt="img1_3" style="zoom: 33%;" />
-<h3 id="历史上各阶段的代表性-os-及其特点"><a class="header" href="#历史上各阶段的代表性-os-及其特点">历史上各阶段的代表性 OS 及其特点</a></h3>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="arceos-概述"><a class="header" href="#arceos-概述">ArceOS 概述</a></h2>
-<h3 id="背景"><a class="header" href="#背景">背景</a></h3>
+<h2 id="历史上各阶段的代表性-os-及其特点"><a class="header" href="#历史上各阶段的代表性-os-及其特点">历史上各阶段的代表性 OS 及其特点</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="arceos-概述"><a class="header" href="#arceos-概述">ArceOS 概述</a></h1>
+<h2 id="背景"><a class="header" href="#背景">背景</a></h2>
 <p>计算机发展到今天，新型硬件层出不穷，应用对性能和安全的需求也越来越⾼。而作为底层支撑的操作系统却发展滞后，无论是以 Linux，Windows 为代表的通用操作系统，还是如 RT-Thread、FreeRTOS 等实时操作系统，都存在着各种各样的问题，很难满足硬件和应用对操作系统的发展需求。</p>
 <img src=".\img\img1_4.png" alt="image-20230904105516339" style="zoom:50%;" />
 <p>⽬前操作系统存在的主要问题：</p>
@@ -233,7 +233,7 @@
 <p>基于现有的复杂的操作系统，开发应用的门槛较高，复杂性也越来越高。</p>
 </li>
 </ul>
-<h3 id="目标与特点"><a class="header" href="#目标与特点">目标与特点</a></h3>
+<h2 id="目标与特点"><a class="header" href="#目标与特点">目标与特点</a></h2>
 <p>ArceOS 是一个实验性的，基于 unikernel 的组件化操作系统， 主要面向的领域是 AIoT，即人工智能+物联网领域，对于安全性、高性能和应用的要求比较高。在设计时，采用 Rust 语言开发操作系统内核，通过结合软硬件协同优化达到如下目标：</p>
 <ul>
 <li>安全（基于 Rust 语言）</li>
@@ -249,7 +249,7 @@
 <li>组件区分系统相关和系统无关：识别具有通用功能的组件，可以为其它操作系统所复用。</li>
 <li>利用 Rust 机制：以 crate 对应组件，trait 对应接口，dependencies+features 的方式对组件进行组织。</li>
 </ol>
-<h3 id="总体结构"><a class="header" href="#总体结构">总体结构</a></h3>
+<h2 id="总体结构"><a class="header" href="#总体结构">总体结构</a></h2>
 <p>ArceOS 从架构上包含如下几层：</p>
 <ul>
 <li>ArceOS crates，通用的基础库，系统无关，为 modules 实现提供支持</li>
@@ -265,8 +265,8 @@
 <li>单地址空间</li>
 <li>单特权级</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="实验设计与准备"><a class="header" href="#实验设计与准备">实验设计与准备</a></h2>
-<h3 id="概述-1"><a class="header" href="#概述-1">概述</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第二章-实验设计与准备"><a class="header" href="#第二章-实验设计与准备">第二章 实验设计与准备</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
 <p>实验引导原理的学习方法：一步一步构建组件化UnikernelOS，每一步把理论介绍与实验过程结合起来，与通过实践理解OS原理，掌握一定的OS构造方法。</p>
 <p>Unikernel对用户表现为单应用，OS则以库的形式嵌入应用。从两个视角介绍实验过程：</p>
 <ul>
@@ -279,7 +279,7 @@
 </ul>
 <p>应用选择mini-redis-server，该应用完成时的目标；相应的OS具备的功能。</p>
 <p>图：双层总体流程图 箭头连接&lt;预留img2_1.png&gt;</p>
-<h3 id="预备知识"><a class="header" href="#预备知识">预备知识</a></h3>
+<h2 id="预备知识"><a class="header" href="#预备知识">预备知识</a></h2>
 <ul>
 <li>
 <p>Rust系统编程</p>
@@ -291,7 +291,7 @@
 <p>MiniRedis的基本功能与客户端使用，基于std标准库</p>
 </li>
 </ul>
-<h3 id="环境配置"><a class="header" href="#环境配置">环境配置</a></h3>
+<h2 id="环境配置"><a class="header" href="#环境配置">环境配置</a></h2>
 <ul>
 <li><a href="https://sunny9299426.github.io/arceos-tutorial-book/ch02-01.html">OS 环境配置</a></li>
 <li><a href="https://sunny9299426.github.io/arceos-tutorial-book/ch02-02.html">Rust 开发环境配置</a></li>
@@ -299,7 +299,7 @@
 <li><a href="https://sunny9299426.github.io/arceos-tutorial-book/ch02-04.html">其他工具安装</a></li>
 <li><a href="https://sunny9299426.github.io/arceos-tutorial-book/ch02-05.html">验证环境</a></li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="os-环境配置"><a class="header" href="#os-环境配置">OS 环境配置</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="os-环境配置"><a class="header" href="#os-环境配置">OS 环境配置</a></h1>
 <p>目前实验内容可支持在 <a href="https://cdimage.ubuntu.com/releases/">Ubuntu操作系统</a> 上进行操作。</p>
 <p>对于 Windows10/11 的用户可以通过系统内置的 WSL2 虚拟机（请不要使用 WSL1）来安装 Ubuntu 22.04，步骤如下：</p>
 <ul>
@@ -334,7 +334,7 @@
 <p>由于时间问题我们主要在 Ubuntu22.04  on x86-64 上进行了测试，后面的配置也是基于此环境进行。你也可以在其他 Linux 发行版上进行实验，基本上不会出现太大的问题。如果遇到了问题的话，请在本节的讨论区中留言，我们会尽量帮助解决。</p>
 </blockquote>
 <p>参考：<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package">使用 WSL 在 Windows 上安装 Linux</a></p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="rust-开发环境配置"><a class="header" href="#rust-开发环境配置">Rust 开发环境配置</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust-开发环境配置"><a class="header" href="#rust-开发环境配置">Rust 开发环境配置</a></h1>
 <p>首先安装 Rust 版本管理器 rustup 和 Rust 包管理器 cargo，这里我们用官方的安装脚本来安装：</p>
 <p><code>curl https://sh.rustup.rs -sSf | sh</code></p>
 <p>如果通过官方的脚本下载失败了，可以在浏览器的地址栏中输入 <a href="https://sh.rustup.rs/">https://sh.rustup.rs</a> 来下载脚本，在本地运行即可。</p>
@@ -404,7 +404,7 @@ rustup component add rust-src
 <li>当然，采用 VIM，Emacs 等传统的编辑器也是没有问题的。</li>
 </ul>
 </blockquote>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="qemu-模拟器安装"><a class="header" href="#qemu-模拟器安装">QEMU 模拟器安装</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="qemu-模拟器安装"><a class="header" href="#qemu-模拟器安装">QEMU 模拟器安装</a></h1>
 <p>我们需要使用 QEMU 7.0 版本进行实验，低版本的 QEMU 可能导致框架代码不能正常运行。而很多 Linux 发行版的软件包管理器默认软件源中的 QEMU 版本过低，因此我们需要从源码手动编译安装 QEMU 模拟器软件。下面以 Ubuntu 22.04 上的安装流程为例进行说明：</p>
 <p>首先我们安装依赖包，获取 QEMU 源代码并手动编译：</p>
 <pre><code class="language-bash"># 安装编译所需的依赖包
@@ -446,7 +446,7 @@ qemu-riscv64 --version
 <p><font color=red><strong>警告⚠️</strong></font></p>
 <p>请尽量不要安装 <code>qemu-kvm</code> ，这可能会导致我们的框架无法正常运行。另外，我们仅在 Qemu 7.0.0 版本上进行了测试，请尽量不要切换到其他版本。</p>
 </blockquote>
-<h3 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h3>
+<h2 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h2>
 <p>1、当安装编译所需的依赖包出现 Package xxx is not available, but is referred to by another package 错误时，可以尝试更新系统软件源，执行如下命令：</p>
 <pre><code class="language-bash">sudo apt-get update
 sudo apt-get upgrade
@@ -455,7 +455,7 @@ sudo apt-get upgrade
 <p>3、在 PC 机上安装 Ubuntu，编译 qemu，提示 python's ensurepip 找不到，可以尝试执行如下命令：</p>
 <pre><code>apt-get install python3-venv
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="其他工具安装"><a class="header" href="#其他工具安装">其他工具安装</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="其他工具安装"><a class="header" href="#其他工具安装">其他工具安装</a></h1>
 <p>本节主要介绍 arceos 编译所需的依赖工具的安装。</p>
 <p>为了使用 objdump、objcopy 工具，我们首先需要安装名为 cargo-binutils 的命令行工具集：</p>
 <pre><code class="language-bash">cargo install cargo-binutils
@@ -475,7 +475,7 @@ tar zxf x86_64-linux-musl-cross.tgz
 # exec below command in bash OR add below info in ~/.bashrc
 export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin:`pwd`/riscv64-linux-musl-cross/bin:$PATH
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="验证环境"><a class="header" href="#验证环境">验证环境</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="验证环境"><a class="header" href="#验证环境">验证环境</a></h1>
 <p>本节介绍如何验证实验环境配置的正确与否。</p>
 <ol>
 <li>
@@ -492,7 +492,7 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </ol>
 <p><img src="./img/2_2.png" alt="image-20230712163420462" /></p>
 <p>到这里，恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！</p>
-<h3 id="q--a-1"><a class="header" href="#q--a-1">Q &amp; A</a></h3>
+<h2 id="q--a-1"><a class="header" href="#q--a-1">Q &amp; A</a></h2>
 <p>当代码跑不起来的时候，可以尝试：</p>
 <ul>
 <li>分支是否与 原版仓库（而非 fork 出来的仓库）的对应分支同步。如不同步的话考虑通过 <code>git pull</code> 进行更新。注：这是因为 Rust 的版本更迭较快，如不及时更新的话曾经能正常运行的代码也会无法运行。</li>
@@ -515,46 +515,46 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
   > ```toml
   > riscv = { git = "https://gitee.com/rcore-os/riscv", features = ["inline-asm"] }
   > ```
---><div style="break-before: page; page-break-before: always;"></div><h2 id="helloarceos"><a class="header" href="#helloarceos">Hello,ArceOS</a></h2>
+--><div style="break-before: page; page-break-before: always;"></div><h1 id="第三章-hello-arceos"><a class="header" href="#第三章-hello-arceos">第三章 Hello, ArceOS</a></h1>
 <p>通常，我们在学习一门新的编程语言时，接触的第一个示例程序就是 helloworld，当一名新的程序员清除完一切障碍顺利抵达 helloworld 时，他的内心体验到的不仅仅是一种成功的喜悦，更重要的是，他正在亲身经历一个跨越历史的时刻。各位，你还记得你第一次写的 helloworld 吗？</p>
 <p>这一章，我们将沿袭前人之路，以 helloworld 来开启沟通 ArceOS 世界的历程。我们将通过从零开始设计实现一个 helloworld unikernel，来建立 ArceOS 的基本框架，并识别出其中的一些核心组件，从而感受 ArceOS 的理念、特性。</p>
-<h3 id="目标"><a class="header" href="#目标">目标</a></h3>
+<h2 id="目标"><a class="header" href="#目标">目标</a></h2>
 <ol>
 <li>从最简单的 HelloWorld 开始，分析建立框架与核心组件；</li>
 <li>支持标准输出和 Log，了解 features 作用。</li>
 </ol>
 <img src="./img/img3_1.png" alt="image-20230905151307734" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h2>
-<h3 id="迭代步骤"><a class="header" href="#迭代步骤">迭代步骤</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h1>
+<h2 id="迭代步骤"><a class="header" href="#迭代步骤">迭代步骤</a></h2>
 <img src="./img/img3_2.png" alt="image-20230905151445642" style="zoom: 33%;" />
-<h3 id="示例流程riscv64"><a class="header" href="#示例流程riscv64">示例流程（riscv64）</a></h3>
+<h2 id="示例流程riscv64"><a class="header" href="#示例流程riscv64">示例流程（riscv64）</a></h2>
 <img src="./img/img3_3.png" alt="image-20230905151554560" style="zoom:50%;" />
-<h4 id="引导过程示例-axhalriscv64"><a class="header" href="#引导过程示例-axhalriscv64">引导过程示例: axhal(riscv64)</a></h4>
+<h3 id="引导过程示例-axhalriscv64"><a class="header" href="#引导过程示例-axhalriscv64">引导过程示例: axhal(riscv64)</a></h3>
 <img src="./img/img3_4.png" alt="image-20230905151803155" style="zoom: 50%;" />
-<h4 id="引导过程示例-axruntime"><a class="header" href="#引导过程示例-axruntime">引导过程示例: axruntime</a></h4>
+<h3 id="引导过程示例-axruntime"><a class="header" href="#引导过程示例-axruntime">引导过程示例: axruntime</a></h3>
 <img src="./img/img3_5.png" alt="image-20230905152234898" style="zoom:50%;" />
 <img src="./img/img3_6.png" alt="image-20230905152308892" style="zoom:50%;" />
 <img src="./img/img3_7.png" alt="image-20230905152347065" style="zoom:50%;" />
-<h4 id="app引导完成转入运行"><a class="header" href="#app引导完成转入运行">app引导完成转入运行</a></h4>
+<h3 id="app引导完成转入运行"><a class="header" href="#app引导完成转入运行">app引导完成转入运行</a></h3>
 <p>应用启动，并基于运行环境提供的各种功能，完成自身的逻辑计算。对于 Helloworld，仅仅需要借助 ulib 中 axstd::println 完成打印输出。</p>
 <img src="./img/img3_8.png" alt="image-20230905152554161" style="zoom:50%;" />
-<h4 id="日志级别控制与-features"><a class="header" href="#日志级别控制与-features">日志级别控制与 features</a></h4>
+<h3 id="日志级别控制与-features"><a class="header" href="#日志级别控制与-features">日志级别控制与 features</a></h3>
 <p>在编译并运行 helloworld 时，可以指定 LOG 环境变量，以输出不同级别的日志。</p>
 <pre><code>make LOG=info run
 </code></pre>
 <p>这是通过 features 传递，改变 kernel 行为的具体方法。可以通过三种方式指定 features：</p>
 <img src="./img/img3_9.png" alt="image-20230905161958548" style="zoom:50%;" />
-<h3 id="附录-相关组件"><a class="header" href="#附录-相关组件">附录 相关组件</a></h3>
+<h2 id="附录-相关组件"><a class="header" href="#附录-相关组件">附录 相关组件</a></h2>
 <ul>
 <li>
-<h4 id="axhal-"><a class="header" href="#axhal-"><code>axhal</code> ：</a></h4>
+<h3 id="axhal-"><a class="header" href="#axhal-"><code>axhal</code> ：</a></h3>
 <ul>
 <li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/modules/axhal">modules/axhal</a></li>
 <li>模块描述： ArceOS 的硬件抽象层，负责为不同操作平台提供统一的 API。它为指定的操作平台进行引导和初始化过程，并在硬件上提供有用的操作。当前主要支持 pc-x86<code>、</code>qemu-virt-riscv<code>、</code>qemu-virt-aarch64` 等平台。</li>
 </ul>
 </li>
 <li>
-<h4 id="axruntime"><a class="header" href="#axruntime"><code>axruntime</code>：</a></h4>
+<h3 id="axruntime"><a class="header" href="#axruntime"><code>axruntime</code>：</a></h3>
 <ul>
 <li>
 <p>模块源码位置：<a href="(https://github.com/rcore-os/arceos/tree/main/modules/axruntime)">modules/axruntime</a></p>
@@ -565,9 +565,9 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </ul>
 </li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结"><a class="header" href="#本章实践与总结">本章实践与总结</a></h2>
-<h3 id="练习"><a class="header" href="#练习">练习</a></h3>
-<h3 id="实验"><a class="header" href="#实验">实验</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结"><a class="header" href="#本章实践与总结">本章实践与总结</a></h1>
+<h2 id="练习"><a class="header" href="#练习">练习</a></h2>
+<h2 id="实验"><a class="header" href="#实验">实验</a></h2>
 <p>题目：仿照println宏，增加一个新的宏println_prefix</p>
 <p>要求：只能修改ulib/axstd/src/macros.rs，执行verify脚本验证a0通过。</p>
 <p>预期输出：</p>
@@ -575,12 +575,12 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <p>Stdout: Hello, world！[2]</p>
 <p>[ArceOS Tutorial]: A0 okay! </p>
 <p>提示：无。</p>
-<h3 id="总结"><a class="header" href="#总结">总结</a></h3>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
 <p>v0.1 建立最基本的框架：核心组件axhal、axruntime、api、ulib以及上层应用组件。</p>
 <p>后续版本在该基本框架的基础上，通过扩展功能组件(虚线部分)，扩展OS能力特性。</p>
 <img src="./img/img3_10.png" alt="image-20230907105509230" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="内存管理"><a class="header" href="#内存管理">内存管理</a></h2>
-<h3 id="目标-1"><a class="header" href="#目标-1">目标</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第四章-内存管理"><a class="header" href="#第四章-内存管理">第四章 内存管理</a></h1>
+<h2 id="目标-1"><a class="header" href="#目标-1">目标</a></h2>
 <ol>
 <li>物理内存布局</li>
 <li>分页功能</li>
@@ -588,14 +588,14 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <li>内存分配算法 tlsf, buddy, slab。</li>
 </ol>
 <p><img src="./img/img4_1.png" alt="image-20230908093104691" /></p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="设计与实现-1"><a class="header" href="#设计与实现-1">设计与实现</a></h2>
-<h3 id="物理内存布局"><a class="header" href="#物理内存布局">物理内存布局</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="设计与实现-1"><a class="header" href="#设计与实现-1">设计与实现</a></h1>
+<h2 id="物理内存布局"><a class="header" href="#物理内存布局">物理内存布局</a></h2>
 <img src="./img/img4_2.png" alt="image4-2" style="zoom:50%;" />
-<h3 id="分页--功能抽象和对应组件"><a class="header" href="#分页--功能抽象和对应组件">分页 – 功能抽象和对应组件</a></h3>
+<h2 id="分页--功能抽象和对应组件"><a class="header" href="#分页--功能抽象和对应组件">分页 – 功能抽象和对应组件</a></h2>
 <img src="./img/img4_3.png" alt="image4_3" style="zoom:50%;" />
 <p>分页启用分两个阶段：早期启用(必须)和后期重建映射(可选) 。</p>
-<h4 id="分页阶段1--早期启用必须"><a class="header" href="#分页阶段1--早期启用必须">分页阶段1 – 早期启用(必须)</a></h4>
-<h5 id="机制"><a class="header" href="#机制">机制</a></h5>
+<h3 id="分页阶段1--早期启用必须"><a class="header" href="#分页阶段1--早期启用必须">分页阶段1 – 早期启用(必须)</a></h3>
+<h4 id="机制"><a class="header" href="#机制">机制</a></h4>
 <p>内核启动的早期，采用规定的恒等映射方式。但是只映射一部分物理空间。</p>
 <p>目标：完成Paging切换后，建立从虚拟空间0xffff_ffc0_8000_0000 ~ 0xffff_ffc0_8000_0000到物理空间0x8000_0000~0xC000_0000 的映射，范围1G。</p>
 <p><strong>两步完成Paging切换：</strong></p>
@@ -604,13 +604,13 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <li>给指令指针寄存器pc，栈寄存器sp等加偏移，在图中该偏移是0xffff_ffc0_0000_0000。如此在虚拟空间执行平移后，就完成到最终目标地址的映射。</li>
 </ol>
 <img src="./img/img4_4.png" alt="image4_4" style="zoom:50%;" />
-<h5 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h5>
+<h4 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h4>
 <img src="./img/img4_5.png" alt="image4_5" style="zoom:50%;" />
 <p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
 <img src="./img/img4_6.png" alt="image4_6" style="zoom:50%;" />
 <p>初始化根页表BOOT_PT_SV39，只有一级，即每个页表项直接映射到1G的地址空间。1G = 230 因此pgd_idx = (VA&gt;&gt;30)&amp;(512-1)0x8000_0000 &gt;&gt; 30，对应pgd_idx = 20xffff_ffc0_8000_0000 &gt;&gt; 30，只保留低9位，对应pgd_idx = 0x102物理页帧号 = 物理地址 &gt;&gt; 12，故0x80000。</p>
-<h4 id="分页阶段2--重建映射可选"><a class="header" href="#分页阶段2--重建映射可选">分页阶段2 – 重建映射(可选)</a></h4>
-<h5 id="机制-1"><a class="header" href="#机制-1">机制</a></h5>
+<h3 id="分页阶段2--重建映射可选"><a class="header" href="#分页阶段2--重建映射可选">分页阶段2 – 重建映射(可选)</a></h3>
+<h4 id="机制-1"><a class="header" href="#机制-1">机制</a></h4>
 <p>重建映射的意义：</p>
 <ol>
 <li>管理更大范围的地址空间</li>
@@ -618,33 +618,33 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </ol>
 <p>BOOT_PT_SV39使用的是LDS定义布局时，直接预留的一页，所以不用额外内存分配。</p>
 <img src="./img/img4_7.png" alt="image4_7" style="zoom:50%;" />
-<h5 id="代码示例-1"><a class="header" href="#代码示例-1">代码示例</a></h5>
+<h4 id="代码示例-1"><a class="header" href="#代码示例-1">代码示例</a></h4>
 <img src="./img/img4_8.png" alt="image4_8" style="zoom:50%;" />
-<h3 id="内存分配"><a class="header" href="#内存分配">内存分配</a></h3>
-<h4 id="接口框架与算法"><a class="header" href="#接口框架与算法">接口、框架与算法</a></h4>
+<h2 id="内存分配"><a class="header" href="#内存分配">内存分配</a></h2>
+<h3 id="接口框架与算法"><a class="header" href="#接口框架与算法">接口、框架与算法</a></h3>
 <img src="./img/img4_9.png" alt="image4_9" style="zoom:50%;" />
-<h4 id="接口和数据结构"><a class="header" href="#接口和数据结构">接口和数据结构</a></h4>
+<h3 id="接口和数据结构"><a class="header" href="#接口和数据结构">接口和数据结构</a></h3>
 <img src="./img/img4_10.png" alt="image4_10" style="zoom:50%;" />
-<h4 id="框架初始化"><a class="header" href="#框架初始化">框架初始化</a></h4>
+<h3 id="框架初始化"><a class="header" href="#框架初始化">框架初始化</a></h3>
 <img src="./img/img4_11.png" alt="image4_11" style="zoom:50%;" />
 <img src="./img/img4_12.png" alt="image4_12" style="zoom:50%;" />
-<h4 id="算法组件接口"><a class="header" href="#算法组件接口">算法组件接口</a></h4>
+<h3 id="算法组件接口"><a class="header" href="#算法组件接口">算法组件接口</a></h3>
 <img src="./img/img4_13.png" alt="image4_13" style="zoom:50%;" />
 <img src="./img/img4_14.png" alt="image4_14" style="zoom:50%;" />
-<h4 id="内存分配算法"><a class="header" href="#内存分配算法">内存分配算法</a></h4>
-<h5 id="tlsf-two-level-segregated-fit"><a class="header" href="#tlsf-two-level-segregated-fit">TLSF (Two-Level Segregated Fit)</a></h5>
+<h3 id="内存分配算法"><a class="header" href="#内存分配算法">内存分配算法</a></h3>
+<h4 id="tlsf-two-level-segregated-fit"><a class="header" href="#tlsf-two-level-segregated-fit">TLSF (Two-Level Segregated Fit)</a></h4>
 <p>两级 bitmap+List 管理空闲块</p>
 <p>bitmap 第一级 First Level：每一位对应一个范围的内存块，示例中分别对应24 ~ 231。1表示空闲。图中两个1。</p>
 <p>bitmap 第二级 Second Leve：有几位就表示几等分。例如， 2^6^ 表示 64~127，然后进行 4 等分，就是 64~79, 80~95, 96~107, 108~127，每一位对应一个范围，同样1表示空闲。</p>
 <p>然后就能找到包含对应范围大小的空闲块链表List。链表耗尽或者新建时，对应维护两级bitmap。</p>
 <p><a href="http://www.gii.upv.es/tlsf/files/ecrts04_tlsf.pdf">算法论文链接</a></p>
 <img src="./img/img4_15.png" alt="image-20230908163833490" style="zoom:50%;" />
-<h5 id="buddy"><a class="header" href="#buddy">Buddy</a></h5>
+<h4 id="buddy"><a class="header" href="#buddy">Buddy</a></h4>
 <p>分配单元 Unit：一般不会采用1字节，通常8，16，32…字节。</p>
 <p>分配：寻找匹配 alloc 需要（order）的最小块如果 order 大于目标，则二分切割，直至相等，每级剩余的部分挂到对应的 Order List；</p>
 <p>释放：查看是否有邻居空闲块，有则尽可能向高 Oder 合并，直至无法合并，挂到 OrderList。</p>
 <img src="./img/img4_16.png" alt="image-20230908164413949" style="zoom:50%;" />
-<h5 id="slab"><a class="header" href="#slab">Slab</a></h5>
+<h4 id="slab"><a class="header" href="#slab">Slab</a></h4>
 <p>结构：</p>
 <ol>
 <li>通过OrderList维护一系列Slab</li>
@@ -655,20 +655,20 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <p>释放：</p>
 <p>放回block空闲链表。</p>
 <img src="./img/img4_17.png" alt="image-20230908164609352" style="zoom:50%;" />
-<h3 id="附录-相关组件-1"><a class="header" href="#附录-相关组件-1">附录 相关组件</a></h3>
+<h2 id="附录-相关组件-1"><a class="header" href="#附录-相关组件-1">附录 相关组件</a></h2>
 <ul>
 <li>
-<h4 id="allocator-"><a class="header" href="#allocator-"><code>allocator</code> ：</a></h4>
+<h3 id="allocator-"><a class="header" href="#allocator-"><code>allocator</code> ：</a></h3>
 <ul>
 <li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/crates/allocator">crates/allocator</a></li>
 <li>模块描述： <code>allocator</code> 模块提供了一个统一的接口，用于实现不同类型的内存分配器算法。该模块共包括三种不同类型的分配器：字节粒度内存分配器 (<code>ByteAllocator</code>)、页粒度内存分配器 (<code>PageAllocator</code>) 和唯一 ID 分配器 (<code>IdAllocator</code>)。每种分配器都有其特定的实现方式，例如 <code>BuddyByteAllocator</code> 和 <code>SlabByteAllocator</code> 对应的是字节粒度内存分配器，而 <code>BitmapPageAllocator</code> 对应的是页粒度内存分配器。这个模块使得不同的内存分配器可以更加灵活地组合和替换，实现更加高效和可靠的内存管理功能。</li>
 </ul>
 </li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结-1"><a class="header" href="#本章实践与总结-1">本章实践与总结</a></h2>
-<h3 id="练习-1"><a class="header" href="#练习-1">练习</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-1"><a class="header" href="#本章实践与总结-1">本章实践与总结</a></h1>
+<h2 id="练习-1"><a class="header" href="#练习-1">练习</a></h2>
 <p>待完善</p>
-<h3 id="实验-1"><a class="header" href="#实验-1">实验</a></h3>
+<h2 id="实验-1"><a class="header" href="#实验-1">实验</a></h2>
 <p>题目：针对字节内存分配，增加一个新的内存分配算法</p>
 <p>要求：只能修改 crates/allocator/src/simple.rs，修改其中的数据结构和填充相关函数，执行 verify 脚本验证 a1 通过。</p>
 <p>提示：</p>
@@ -684,7 +684,7 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </li>
 </ol>
 <img src="./img/img4_18.png" alt="image-20230908165138488" style="zoom:50%;" />
-<h3 id="总结-1"><a class="header" href="#总结-1">总结</a></h3>
+<h2 id="总结-1"><a class="header" href="#总结-1">总结</a></h2>
 <p>v0.2 内存管理框架与功能：</p>
 <ol>
 <li>
@@ -700,8 +700,8 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </ol>
 <p>启动早期基于静态恒等映射完成分页切换，如果指定 paging feature 则会在启动后期重新建立范围更大，权限控制更细的映射。</p>
 <img src="./img/img4_19.png" alt="image-20230908165439924" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="任务调度"><a class="header" href="#任务调度">任务调度</a></h2>
-<h3 id="目标-2"><a class="header" href="#目标-2">目标</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第五章-任务调度"><a class="header" href="#第五章-任务调度">第五章 任务调度</a></h1>
+<h2 id="目标-2"><a class="header" href="#目标-2">目标</a></h2>
 <ol>
 <li>任务和任务状态</li>
 <li>通用调度框架和初始化</li>
@@ -711,27 +711,27 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <li>抢占式调度框架实现</li>
 <li>抢占式调度算法：sched_rr &amp; sched_cfs</li>
 </ol>
-<h3 id="概念"><a class="header" href="#概念">概念</a></h3>
+<h2 id="概念"><a class="header" href="#概念">概念</a></h2>
 <p><strong>任务：</strong> 被调度的对象，具有独立工作逻辑。</p>
 <p><strong>调度：</strong> 资源相对于使用者通常是不足的，调度就是用来协调每个请求对资源的使用的方法。</p>
 <p><strong>任务调度：</strong> 协调可执行任务对 CPU资源 的使用。</p>
 <p><strong>协作式调度：</strong> 任务之间通过“友好”协作方式分享CPU资源。具体的，当前任务是否让出和何时让出CPU控制权完全由当前任务自己决定。</p>
 <p><strong>抢占式调度：</strong> 调度器依据策略，可以打断当前任务的执行，移交CPU执行权给当前“更”有资格 的任务。抢占机制的根本保障是系统定时器。</p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="51-建立通用调度框架"><a class="header" href="#51-建立通用调度框架">5.1 建立通用调度框架</a></h2>
-<h3 id="511-任务"><a class="header" href="#511-任务">5.1.1 任务</a></h3>
-<h4 id="一任务状态"><a class="header" href="#一任务状态">一、任务状态</a></h4>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="建立通用调度框架"><a class="header" href="#建立通用调度框架">建立通用调度框架</a></h1>
+<h2 id="任务"><a class="header" href="#任务">任务</a></h2>
+<h3 id="任务状态"><a class="header" href="#任务状态">任务状态</a></h3>
 <p><img src="img/img5_1.png" alt="image-20230911094606238" /></p>
-<h4 id="二任务数据结构"><a class="header" href="#二任务数据结构">二、任务数据结构</a></h4>
+<h3 id="任务数据结构"><a class="header" href="#任务数据结构">任务数据结构</a></h3>
 <img src="./img/img5_2.png" alt="image-20230911094724468" style="zoom:50%;" />
-<h3 id="512-通用调度框架和初始化"><a class="header" href="#512-通用调度框架和初始化">5.1.2 通用调度框架和初始化</a></h3>
-<h4 id="一通用调度框架"><a class="header" href="#一通用调度框架">一、通用调度框架</a></h4>
+<h2 id="通用调度框架和初始化"><a class="header" href="#通用调度框架和初始化">通用调度框架和初始化</a></h2>
+<h3 id="通用调度框架"><a class="header" href="#通用调度框架">通用调度框架</a></h3>
 <p>框架支持协作式和抢占式调度。其中，标红的两处：</p>
 <ul>
 <li>当前任务是操作的焦点；</li>
 <li>TaskContext.switch_to 是任务切换的关键。</li>
 </ul>
 <img src="./img/img5_3.png" alt="image-20230911095148916" style="zoom:50%;" />
-<h4 id="二接口---主要调度api"><a class="header" href="#二接口---主要调度api">二、接口 - 主要调度API</a></h4>
+<h3 id="接口---主要调度api"><a class="header" href="#接口---主要调度api">接口 - 主要调度API</a></h3>
 <p>接口公开的是 runqueue 的对应方法：</p>
 <ul>
 <li>spawn&amp;spawn_raw：产生一个新任务，加入 runqueue，处于 Ready；</li>
@@ -739,23 +739,23 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 <li>sleep&amp;sleep_until：(1)睡眠固定的时间后醒来；(2)在 timers 定时器列表中注册，等待唤醒；</li>
 <li>exit：当前任务退出，标记状态，等待 GC 回收。</li>
 </ul>
-<h4 id="三调度框架初始化"><a class="header" href="#三调度框架初始化">三、调度框架初始化</a></h4>
+<h3 id="调度框架初始化"><a class="header" href="#调度框架初始化">调度框架初始化</a></h3>
 <img src="./img/img5_4.png" alt="image-20230911100020690" style="zoom:50%;" />
-<h4 id="四核心算法context_switch"><a class="header" href="#四核心算法context_switch">四、核心算法：context_switch</a></h4>
+<h3 id="核心算法context_switch"><a class="header" href="#核心算法context_switch">核心算法：context_switch</a></h3>
 <p>任务上下文 Context：保存任务状态的最小的寄存器状态集合。</p>
 <p>下图是理解上下文切换的两个角度：</p>
 <img src="./img/img5_5.png" alt="image-20230911100211501" style="zoom:50%;" />
-<h4 id="五上下文-context-包含寄存器"><a class="header" href="#五上下文-context-包含寄存器">五、上下文 Context 包含寄存器:</a></h4>
+<h3 id="上下文-context-包含寄存器"><a class="header" href="#上下文-context-包含寄存器">上下文 Context 包含寄存器:</a></h3>
 <ul>
 <li>ra:：函数返回地址寄存器，这个切换实现了任务执行指令流的切换；</li>
 <li>sp：任务即线程，这个是线程栈；</li>
 <li>s0~s11：按照 riscv 规范，callee 不能改这组寄存器的信息，所以需要保存。</li>
 </ul>
 <img src="./img/img5_6.png" alt="image-20230911100633263" style="zoom:50%;" />
-<h3 id="513-系统内置任务idle-main和gc"><a class="header" href="#513-系统内置任务idle-main和gc">5.1.3 系统内置任务idle, main和gc</a></h3>
+<h2 id="系统内置任务idle-main和gc"><a class="header" href="#系统内置任务idle-main和gc">系统内置任务idle, main和gc</a></h2>
 <img src="./img/img5_7.png" alt="image-20230911101154789" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="52-协作式调度机制与示例"><a class="header" href="#52-协作式调度机制与示例">5.2 协作式调度机制与示例</a></h2>
-<h3 id="521-协作式调度算法-fifo-机制"><a class="header" href="#521-协作式调度算法-fifo-机制">5.2.1 协作式调度算法 FIFO 机制</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="协作式调度机制与示例"><a class="header" href="#协作式调度机制与示例">协作式调度机制与示例</a></h1>
+<h2 id="协作式调度算法-fifo-机制"><a class="header" href="#协作式调度算法-fifo-机制">协作式调度算法 FIFO 机制</a></h2>
 <ul>
 <li>
 <p>任务按照先入先出的顺序被 CPU 执行；</p>
@@ -776,15 +776,15 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </li>
 </ul>
 <img src="./img/img5_8.png" alt="image-20230911105017007" style="zoom:50%;" />
-<h3 id="522-协作式调度算法fifo实现"><a class="header" href="#522-协作式调度算法fifo实现">5.2.2 协作式调度算法FIFO实现</a></h3>
+<h2 id="协作式调度算法fifo实现"><a class="header" href="#协作式调度算法fifo实现">协作式调度算法FIFO实现</a></h2>
 <img src="./img/img5_9.png" alt="image-20230911105143268" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="53-抢占式调度机制与示例"><a class="header" href="#53-抢占式调度机制与示例">5.3 抢占式调度机制与示例</a></h2>
-<h3 id="531-抢占式调度与协作式在框架上的区别"><a class="header" href="#531-抢占式调度与协作式在框架上的区别">5.3.1 抢占式调度与协作式在框架上的区别</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="抢占式调度机制与示例"><a class="header" href="#抢占式调度机制与示例">抢占式调度机制与示例</a></h1>
+<h2 id="抢占式调度与协作式在框架上的区别"><a class="header" href="#抢占式调度与协作式在框架上的区别">抢占式调度与协作式在框架上的区别</a></h2>
 <p>抢占式调度在协作式自主 yield 的基础上，通过加入时钟中断，确保个别任务不会长期不合理的占据 CPU。</p>
 <img src="./img/img5_10.png" alt="image-20230911105410138" style="zoom:50%;" />
-<h3 id="532-时钟中断与抢占式调度"><a class="header" href="#532-时钟中断与抢占式调度">5.3.2 时钟中断与抢占式调度</a></h3>
+<h2 id="时钟中断与抢占式调度"><a class="header" href="#时钟中断与抢占式调度">时钟中断与抢占式调度</a></h2>
 <img src="./img/img5_11.png" alt="image-20230911105602764" style="zoom:50%;" />
-<h3 id="533-抢占式调度算法-round_robin"><a class="header" href="#533-抢占式调度算法-round_robin">5.3.3 抢占式调度算法 ROUND_ROBIN</a></h3>
+<h2 id="抢占式调度算法-round_robin"><a class="header" href="#抢占式调度算法-round_robin">抢占式调度算法 ROUND_ROBIN</a></h2>
 <p>在协作式调度 FIFO 的基础上，由定时器定时递减<font color=red>当前任务</font>的时间片，耗尽时排到队尾，如此完成各个任务的循环排列。</p>
 <blockquote>
 <p><font color=blue><strong>注👉</strong></font> 
@@ -792,7 +792,7 @@ export PATH=`pwd`/x86_64-linux-musl-cross/bin:`pwd`/aarch64-linux-musl-cross/bin
 </blockquote>
 <img src="./img/img5_12.png" alt="image-20230911105814589" style="zoom:50%;" />
 <img src="./img/img5_13.png" alt="image-20230911110533751" style="zoom:50%;" />
-<h3 id="534-抢占式调度算法-cfscompletely-fair-scheduler"><a class="header" href="#534-抢占式调度算法-cfscompletely-fair-scheduler">5.3.4 抢占式调度算法 CFS(Completely Fair Scheduler)</a></h3>
+<h2 id="抢占式调度算法-cfscompletely-fair-scheduler"><a class="header" href="#抢占式调度算法-cfscompletely-fair-scheduler">抢占式调度算法 CFS(Completely Fair Scheduler)</a></h2>
 <p>当前 vruntime 最小的任务就是当前任务。计算公式：
 $$
 vruntime = init_vruntime + (delta / weight(nice))
@@ -801,11 +801,11 @@ $$
 <img src="./img/img5_14.png" alt="image-20230911110718949" style="zoom:50%;" />
 <img src="./img/img5_15.png" alt="image-20230911110817258" style="zoom:50%;" />
 <img src="./img/img5_16.png" alt="image-20230911110905924" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h1 id="54-本章实践与总结"><a class="header" href="#54-本章实践与总结">5.4 本章实践与总结</a></h1>
-<h3 id="541-练习"><a class="header" href="#541-练习">5.4.1 练习</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-2"><a class="header" href="#本章实践与总结-2">本章实践与总结</a></h1>
+<h2 id="练习-2"><a class="header" href="#练习-2">练习</a></h2>
 <p>待完善</p>
-<h3 id="542-实验"><a class="header" href="#542-实验">5.4.2 实验</a></h3>
-<h4 id="实验1"><a class="header" href="#实验1">实验1</a></h4>
+<h2 id="实验-2"><a class="header" href="#实验-2">实验</a></h2>
+<h3 id="实验1"><a class="header" href="#实验1">实验1</a></h3>
 <p>题目：把协作式调度算法改造为抢占式调度算法。</p>
 <p>要求：只能修改 crates/scheduler/src/simple.rs，修改其中的数据结构和填充相关函数，执行 verify 脚本验证通过。</p>
 <p>提示：</p>
@@ -813,35 +813,35 @@ $$
 <li>可以参考现有的 sched_rr 或 sched_cfs 等算法；或者其它了解的算法。</li>
 <li>重点是发挥 task_tick 方法的作用。</li>
 </ul>
-<h4 id="实验2"><a class="header" href="#实验2">实验2</a></h4>
+<h3 id="实验2"><a class="header" href="#实验2">实验2</a></h3>
 <p>题目：支持 ramfs 的 rename 操作。</p>
 <p>要求：只能修改 crates/axfs_ramfs/src/dir.rs，增加相关函数，实现部分 trait，执行 verify 脚本验证通过。</p>
 <p>提示：无</p>
-<h3 id="543-总结"><a class="header" href="#543-总结">5.4.3 总结</a></h3>
+<h2 id="总结-2"><a class="header" href="#总结-2">总结</a></h2>
 <p>通过本章学习，建立了基础的调度框架，引入三个系统任务辅助任务管理。目前可以基于最简单的协作式和抢占式调度算法，支持多任务。</p>
 <blockquote>
 <p><font color=blue><strong>注👉</strong></font></p>
 <p>注意，ArceOS 的抢占式调度与 Linux 所说的”抢占”有概念上的区别。</p>
 </blockquote>
 <img src="./img/img5_17.png" alt="image-20230911113912689" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="设备与驱动"><a class="header" href="#设备与驱动">设备与驱动</a></h2>
-<h3 id="目标-3"><a class="header" href="#目标-3">目标</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第六章-设备与驱动"><a class="header" href="#第六章-设备与驱动">第六章 设备与驱动</a></h1>
+<h2 id="目标-3"><a class="header" href="#目标-3">目标</a></h2>
 <ol>
 <li>设备管理结构</li>
 <li>设备发现与初始化</li>
 <li>中断机制与初始化</li>
 </ol>
 <img src="./img/img6_1.png" alt="image-20230911144552390" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="设计与实现-2"><a class="header" href="#设计与实现-2">设计与实现</a></h2>
-<h3 id="设备管理框架"><a class="header" href="#设备管理框架">设备管理框架</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="设计与实现-2"><a class="header" href="#设计与实现-2">设计与实现</a></h1>
+<h2 id="设备管理框架"><a class="header" href="#设备管理框架">设备管理框架</a></h2>
 <p>AllDevices 管理系统所有的设备，为上层的子系统如文件系统 FS、网络协议栈 NET 提供访问服务。</p>
 <p>三种设备类型：</p>
 <img src="./img/img6_2.png" alt="image-20230911145019737" style="zoom:50%;" />
-<h3 id="设备发现与初始化过程"><a class="header" href="#设备发现与初始化过程">设备发现与初始化过程</a></h3>
+<h2 id="设备发现与初始化过程"><a class="header" href="#设备发现与初始化过程">设备发现与初始化过程</a></h2>
 <img src="./img/img6_3.png" alt="image-20230911145131833" style="zoom:50%;" />
-<h4 id="基于总线发现设备--qemu-平台示例"><a class="header" href="#基于总线发现设备--qemu-平台示例">基于总线发现设备- qemu 平台示例</a></h4>
+<h3 id="基于总线发现设备--qemu-平台示例"><a class="header" href="#基于总线发现设备--qemu-平台示例">基于总线发现设备- qemu 平台示例</a></h3>
 <img src="./img/img6_4.png" alt="image-20230911145250416" style="zoom:50%;" />
-<h4 id="virtio-设备的-probe-过程"><a class="header" href="#virtio-设备的-probe-过程">virtio 设备的 probe 过程</a></h4>
+<h3 id="virtio-设备的-probe-过程"><a class="header" href="#virtio-设备的-probe-过程">virtio 设备的 probe 过程</a></h3>
 <ol>
 <li>
 <p>qemu 模拟器基于命令行产生设备：</p>
@@ -865,58 +865,58 @@ $$
 </li>
 </ol>
 <img src="./img/img6_5.png" alt="image-20230911145802450" style="zoom:50%;" />
-<h4 id="virtio-驱动基本模型"><a class="header" href="#virtio-驱动基本模型">virtio 驱动基本模型</a></h4>
+<h3 id="virtio-驱动基本模型"><a class="header" href="#virtio-驱动基本模型">virtio 驱动基本模型</a></h3>
 <p>virtio 驱动和 virtio 设备交互的两条路：</p>
 <ol>
 <li>主要基于 vring 环形队列：本质上是连续的 Page 页面，在 Guest 和 Host 都可见可写；</li>
 <li>中断响应的通道：主要对等待读取大块数据时是有用。</li>
 </ol>
 <img src="./img/img6_6.png" alt="image-20230911150030496" style="zoom:50%;" />
-<h3 id="中断机制与初始化以-riscv64-为例"><a class="header" href="#中断机制与初始化以-riscv64-为例">中断机制与初始化（以 riscv64 为例）</a></h3>
+<h2 id="中断机制与初始化以-riscv64-为例"><a class="header" href="#中断机制与初始化以-riscv64-为例">中断机制与初始化（以 riscv64 为例）</a></h2>
 <img src="./img/img6_7.png" alt="image-20230911150146713" style="zoom:50%;" />
-<h3 id="块设备驱动---blockdriver"><a class="header" href="#块设备驱动---blockdriver">块设备驱动 - BlockDriver</a></h3>
+<h2 id="块设备驱动---blockdriver"><a class="header" href="#块设备驱动---blockdriver">块设备驱动 - BlockDriver</a></h2>
 <img src="./img/img6_8.png" alt="image-20230911151439938" style="zoom:50%;" />
-<h4 id="块设备驱动-trait---blockdriverops"><a class="header" href="#块设备驱动-trait---blockdriverops">块设备驱动 Trait - BlockDriverOps</a></h4>
+<h3 id="块设备驱动-trait---blockdriverops"><a class="header" href="#块设备驱动-trait---blockdriverops">块设备驱动 Trait - BlockDriverOps</a></h3>
 <img src="./img/img6_9.png" alt="image-20230911151607819" style="zoom: 50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结-2"><a class="header" href="#本章实践与总结-2">本章实践与总结</a></h2>
-<h3 id="练习-2"><a class="header" href="#练习-2">练习</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-3"><a class="header" href="#本章实践与总结-3">本章实践与总结</a></h1>
+<h2 id="练习-3"><a class="header" href="#练习-3">练习</a></h2>
 <p>待完善</p>
-<h3 id="实验-2"><a class="header" href="#实验-2">实验</a></h3>
+<h2 id="实验-3"><a class="header" href="#实验-3">实验</a></h2>
 <p>待完善</p>
-<h3 id="总结-2"><a class="header" href="#总结-2">总结</a></h3>
+<h2 id="总结-3"><a class="header" href="#总结-3">总结</a></h2>
 <p>待完善</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第七章-文件系统"><a class="header" href="#第七章-文件系统">第七章 文件系统</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="设计与实现-3"><a class="header" href="#设计与实现-3">设计与实现</a></h2>
-<h3 id="文件系统---filesystem"><a class="header" href="#文件系统---filesystem">文件系统 - FileSystem</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="设计与实现-3"><a class="header" href="#设计与实现-3">设计与实现</a></h1>
+<h2 id="文件系统---filesystem"><a class="header" href="#文件系统---filesystem">文件系统 - FileSystem</a></h2>
 <img src="./img/img6_10.png" alt="image-20230911151734593" style="zoom:50%;" />
-<h3 id="文件系统的抽象与对应数据结构"><a class="header" href="#文件系统的抽象与对应数据结构">文件系统的抽象与对应数据结构</a></h3>
+<h2 id="文件系统的抽象与对应数据结构"><a class="header" href="#文件系统的抽象与对应数据结构">文件系统的抽象与对应数据结构</a></h2>
 <img src="./img/img6_11.png" alt="image-20230911151843644" style="zoom:50%;" />
-<h3 id="文件系统节点的操作流程"><a class="header" href="#文件系统节点的操作流程">文件系统节点的操作流程</a></h3>
+<h2 id="文件系统节点的操作流程"><a class="header" href="#文件系统节点的操作流程">文件系统节点的操作流程</a></h2>
 <p>第一步：获得 Root 目录节点；</p>
 <p>第二步：解析路径，逐级通过 lookup 方法找到对应节点，直至目标节点；</p>
 <p>第三步：对目标节点执行操作。</p>
 <img src="./img/img6_12.png" alt="image-20230911151956473" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h2 id="本章实践与总结-3"><a class="header" href="#本章实践与总结-3">本章实践与总结</a></h2>
-<h3 id="练习-3"><a class="header" href="#练习-3">练习</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-4"><a class="header" href="#本章实践与总结-4">本章实践与总结</a></h1>
+<h2 id="练习-4"><a class="header" href="#练习-4">练习</a></h2>
 <p>待完善</p>
-<h3 id="实验-3"><a class="header" href="#实验-3">实验</a></h3>
+<h2 id="实验-4"><a class="header" href="#实验-4">实验</a></h2>
 <p>待完善</p>
-<h3 id="总结-3"><a class="header" href="#总结-3">总结</a></h3>
+<h2 id="总结-4"><a class="header" href="#总结-4">总结</a></h2>
 <p>待完善</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第八章-网络"><a class="header" href="#第八章-网络">第八章 网络</a></h1>
-<h3 id="目标-4"><a class="header" href="#目标-4">目标</a></h3>
+<h2 id="目标-4"><a class="header" href="#目标-4">目标</a></h2>
 <img src="./img/img8_1.png" alt="image-20230911154129054" style="zoom:50%;" />
 <div style="break-before: page; page-break-before: always;"></div><h1 id="设计与实现-4"><a class="header" href="#设计与实现-4">设计与实现</a></h1>
-<h3 id="网卡过滤驱动"><a class="header" href="#网卡过滤驱动">网卡过滤驱动</a></h3>
+<h2 id="网卡过滤驱动"><a class="header" href="#网卡过滤驱动">网卡过滤驱动</a></h2>
 <p>在驱动链中插入一级驱动，向上提供与下层一致的接口，向下为上层传递请求。通常作为安全用途：监控、审计甚至阻断。</p>
 <img src="./img/img8_2.png" alt="image-20230911154302824" style="zoom:50%;" />
-<h3 id="网络协议栈---net"><a class="header" href="#网络协议栈---net">网络协议栈 - NET</a></h3>
+<h2 id="网络协议栈---net"><a class="header" href="#网络协议栈---net">网络协议栈 - NET</a></h2>
 <p>目前基于对 smoltcp 的封装。</p>
 <img src="./img/img8_3.png" alt="image-20230911154407174" style="zoom:50%;" />
-<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-4"><a class="header" href="#本章实践与总结-4">本章实践与总结</a></h1>
-<h3 id="练习-4"><a class="header" href="#练习-4">练习</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="本章实践与总结-5"><a class="header" href="#本章实践与总结-5">本章实践与总结</a></h1>
+<h2 id="练习-5"><a class="header" href="#练习-5">练习</a></h2>
 <p>待完善</p>
-<h3 id="实验-4"><a class="header" href="#实验-4">实验</a></h3>
+<h2 id="实验-5"><a class="header" href="#实验-5">实验</a></h2>
 <p>题目：实现针对 virtio-net 驱动的过滤驱动，监控发送和接受的数据包。</p>
 <p>要求：只能修改 modules/axdriver/src/filter.rs，执行 verify 脚本验证通过。并且屏幕输出如下：</p>
 <img src="./img/img8_4.png" alt="image-20230911154543778" style="zoom:50%;" />
@@ -934,23 +934,23 @@ $$
 </code></pre>
 </li>
 </ul>
-<h3 id="总结-4"><a class="header" href="#总结-4">总结</a></h3>
+<h2 id="总结-5"><a class="header" href="#总结-5">总结</a></h2>
 <p>待完善</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第九章-应用支持库--axstd--axlibc"><a class="header" href="#第九章-应用支持库--axstd--axlibc">第九章 应用支持库- axstd &amp; axlibc</a></h1>
 <p>支持 Rust 和 C 两种应用库。</p>
 <img src="./img/img9_1.png" alt="image-20230911155700423" style="zoom:50%;" />
-<h3 id="rust-库---axstd"><a class="header" href="#rust-库---axstd">Rust 库 - axstd</a></h3>
+<h2 id="rust-库---axstd"><a class="header" href="#rust-库---axstd">Rust 库 - axstd</a></h2>
 <p>参照官方 Std 的接口及目录设置，用 ArceOS 对应的功能匹配。</p>
 <img src="./img/img9_2.png" alt="image-20230911155743683" style="zoom:50%;" />
-<h3 id="c-库---axlibc"><a class="header" href="#c-库---axlibc">C 库 - axlibc</a></h3>
+<h2 id="c-库---axlibc"><a class="header" href="#c-库---axlibc">C 库 - axlibc</a></h2>
 <p>首先把 ArceOS 主体编译为静态库，最后与应用以及 axlib 完成链接。</p>
 <img src="./img/img9_3.png" alt="image-20230911155842279" style="zoom:50%;" />
-<h3 id="axstd--axlibc-方式的对比"><a class="header" href="#axstd--axlibc-方式的对比">axstd &amp; axlibc 方式的对比</a></h3>
+<h2 id="axstd--axlibc-方式的对比"><a class="header" href="#axstd--axlibc-方式的对比">axstd &amp; axlibc 方式的对比</a></h2>
 <img src="./img/img9_4.png" alt="image-20230911155928415" style="zoom:50%;" />
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第十章-多核支持---smp"><a class="header" href="#第十章-多核支持---smp">第十章 多核支持 - SMP</a></h1>
 <p>多个 CPU (核)共享同一个任务调度队列，实现任务并发执行。SpinLock 自旋锁对任务队列提供互斥保护。</p>
 <img src="./img/img10_1.png" alt="image-20230911161008055" style="zoom:50%;" />
-<h3 id="percpu-作用"><a class="header" href="#percpu-作用">PerCPU 作用</a></h3>
+<h2 id="percpu-作用"><a class="header" href="#percpu-作用">PerCPU 作用</a></h2>
 <p>专属于 CPU 的本地存储区域，获得更高的本地缓存效率。</p>
 <p>类比：</p>
 <ul>
@@ -960,12 +960,12 @@ $$
 <img src="./img/img10_2.png" alt="image-20230911161148978" style="zoom:50%;" />
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第十一章-总结和展望"><a class="header" href="#第十一章-总结和展望">第十一章 总结和展望</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="设计思想"><a class="header" href="#设计思想">设计思想</a></h1>
-<h3 id="组件化方法构造-os"><a class="header" href="#组件化方法构造-os">组件化方法构造 OS</a></h3>
+<h2 id="组件化方法构造-os"><a class="header" href="#组件化方法构造-os">组件化方法构造 OS</a></h2>
 <p>以组件库为基础，通过组合组件方式构造各种特性的 OS。即研究一种基于组件构造 OS 的&quot;工厂式&quot;方法。</p>
 <img src="./img/img11_1.png" alt="image-20230911161455096" style="zoom:50%;" />
-<h3 id="操作系统相关与无关"><a class="header" href="#操作系统相关与无关">操作系统相关与无关</a></h3>
+<h2 id="操作系统相关与无关"><a class="header" href="#操作系统相关与无关">操作系统相关与无关</a></h2>
 <img src="./img/img11_2.png" alt="image-20230911161542372" style="zoom:50%;" />
-<h3 id="主干组件与功能组件"><a class="header" href="#主干组件与功能组件">主干组件与功能组件</a></h3>
+<h2 id="主干组件与功能组件"><a class="header" href="#主干组件与功能组件">主干组件与功能组件</a></h2>
 <ol>
 <li>
 <p>通过横向对比各种 OS 实现</p>
@@ -991,25 +991,25 @@ $$
 </li>
 </ol>
 <img src="./img/img11_3.png" alt="image-20230911162523660" style="zoom:50%;" />
-<h3 id="面向应用"><a class="header" href="#面向应用">面向应用</a></h3>
+<h2 id="面向应用"><a class="header" href="#面向应用">面向应用</a></h2>
 <ol>
 <li>以应用为中心：整个系统服务于应用和支撑应用；</li>
 <li>依赖组件集合最小化：满足应用运行前提下，无冗余组件。</li>
 </ol>
 <img src="./img/img11_4.png" alt="image-20230911162656680" style="zoom:50%;" />
-<h3 id="构造过程脚本和测试"><a class="header" href="#构造过程脚本和测试">构造过程、脚本和测试</a></h3>
+<h2 id="构造过程脚本和测试"><a class="header" href="#构造过程脚本和测试">构造过程、脚本和测试</a></h2>
 <img src="./img/img11_5.png" alt="image-20230911162820264" style="zoom:50%;" />
 <div style="break-before: page; page-break-before: always;"></div><h1 id="未来发展"><a class="header" href="#未来发展">未来发展</a></h1>
-<h3 id="异步"><a class="header" href="#异步">异步</a></h3>
-<h4 id="研究的基础"><a class="header" href="#研究的基础"><strong>研究的基础</strong></a></h4>
+<h2 id="异步"><a class="header" href="#异步">异步</a></h2>
+<h3 id="研究的基础"><a class="header" href="#研究的基础"><strong>研究的基础</strong></a></h3>
 <ol>
 <li>IO 密集型是 AIoT 的典型场景，最适合采用异步</li>
 <li>ArceOS 是应用为中心的 UniKernel OS，相对 Linux 等通用宏内核或微内核，其专用性更适应AIoT 特点</li>
 <li>Rust语言级支持异步，即 async/await</li>
 </ol>
-<h4 id="研究的意义"><a class="header" href="#研究的意义">研究的意义</a></h4>
+<h3 id="研究的意义"><a class="header" href="#研究的意义">研究的意义</a></h3>
 <p>面向 AIoT 的 IO 密集型场景，以组件化方式构建以应用为中心的 UniKernel OS，并发挥 Rust 对异步的内置支持能力。这种方案有可能比基于传统 OS 建立的方案，具有更高的运行效率和更小的Image。</p>
-<h4 id="需要解决的问题"><a class="header" href="#需要解决的问题">需要解决的问题</a></h4>
+<h3 id="需要解决的问题"><a class="header" href="#需要解决的问题">需要解决的问题</a></h3>
 <ol>
 <li>Tokio 本身的改造，提升协程与线程的协作效率；</li>
 <li>Rust 标准库支持 ArceOS 后端，编译时支持 ArceOS 这个 Target；</li>
@@ -1024,19 +1024,19 @@ $$
 <li>线程，即 OS 的线程。负责执行若干个 task 协程。并且具有特定条件下，steal task 的能力。</li>
 </ol>
 <p><img src="./img/img11_7.png" alt="image-20230911163826826" /></p>
-<h4 id="研究目标"><a class="header" href="#研究目标">研究目标</a></h4>
+<h3 id="研究目标"><a class="header" href="#研究目标">研究目标</a></h3>
 <p>在 ArceOS 平台上，协程与线程的高效协同。涉及调度策略、协程锁与线程锁，消息交换和共享等优化。</p>
-<h3 id="平台移植"><a class="header" href="#平台移植">平台移植</a></h3>
+<h2 id="平台移植"><a class="header" href="#平台移植">平台移植</a></h2>
 <p>树莓派 arm 平台的移植参考。arm 体系结构已存在，基本不用改；platform 增加对应目录，大部分代码可复用 aarch64_common 中内容。</p>
 <img src="./img/img11_8.png" alt="image-20230911163926101" style="zoom:50%;" />
-<h3 id="宏内核微内核"><a class="header" href="#宏内核微内核">宏内核/微内核</a></h3>
+<h2 id="宏内核微内核"><a class="header" href="#宏内核微内核">宏内核/微内核</a></h2>
 <ol>
 <li>从单地址空间到多地址空间；</li>
 <li>从单内核态到内核态+用户态；</li>
 <li>引入系统调用层以及进程相关的功能。</li>
 </ol>
 <img src="./img/img11_9.png" alt="image-20230911164331843" style="zoom:50%;" />
-<h3 id="研究全景图"><a class="header" href="#研究全景图">研究全景图</a></h3>
+<h2 id="研究全景图"><a class="header" href="#研究全景图">研究全景图</a></h2>
 <img src="./img/img11_10.png" alt="image-20230911164426556" style="zoom:50%;" />
 
                     </main>

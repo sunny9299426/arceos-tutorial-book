@@ -169,21 +169,21 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="51-建立通用调度框架"><a class="header" href="#51-建立通用调度框架">5.1 建立通用调度框架</a></h2>
-<h3 id="511-任务"><a class="header" href="#511-任务">5.1.1 任务</a></h3>
-<h4 id="一任务状态"><a class="header" href="#一任务状态">一、任务状态</a></h4>
+                        <h1 id="建立通用调度框架"><a class="header" href="#建立通用调度框架">建立通用调度框架</a></h1>
+<h2 id="任务"><a class="header" href="#任务">任务</a></h2>
+<h3 id="任务状态"><a class="header" href="#任务状态">任务状态</a></h3>
 <p><img src="img/img5_1.png" alt="image-20230911094606238" /></p>
-<h4 id="二任务数据结构"><a class="header" href="#二任务数据结构">二、任务数据结构</a></h4>
+<h3 id="任务数据结构"><a class="header" href="#任务数据结构">任务数据结构</a></h3>
 <img src="./img/img5_2.png" alt="image-20230911094724468" style="zoom:50%;" />
-<h3 id="512-通用调度框架和初始化"><a class="header" href="#512-通用调度框架和初始化">5.1.2 通用调度框架和初始化</a></h3>
-<h4 id="一通用调度框架"><a class="header" href="#一通用调度框架">一、通用调度框架</a></h4>
+<h2 id="通用调度框架和初始化"><a class="header" href="#通用调度框架和初始化">通用调度框架和初始化</a></h2>
+<h3 id="通用调度框架"><a class="header" href="#通用调度框架">通用调度框架</a></h3>
 <p>框架支持协作式和抢占式调度。其中，标红的两处：</p>
 <ul>
 <li>当前任务是操作的焦点；</li>
 <li>TaskContext.switch_to 是任务切换的关键。</li>
 </ul>
 <img src="./img/img5_3.png" alt="image-20230911095148916" style="zoom:50%;" />
-<h4 id="二接口---主要调度api"><a class="header" href="#二接口---主要调度api">二、接口 - 主要调度API</a></h4>
+<h3 id="接口---主要调度api"><a class="header" href="#接口---主要调度api">接口 - 主要调度API</a></h3>
 <p>接口公开的是 runqueue 的对应方法：</p>
 <ul>
 <li>spawn&amp;spawn_raw：产生一个新任务，加入 runqueue，处于 Ready；</li>
@@ -191,20 +191,20 @@
 <li>sleep&amp;sleep_until：(1)睡眠固定的时间后醒来；(2)在 timers 定时器列表中注册，等待唤醒；</li>
 <li>exit：当前任务退出，标记状态，等待 GC 回收。</li>
 </ul>
-<h4 id="三调度框架初始化"><a class="header" href="#三调度框架初始化">三、调度框架初始化</a></h4>
+<h3 id="调度框架初始化"><a class="header" href="#调度框架初始化">调度框架初始化</a></h3>
 <img src="./img/img5_4.png" alt="image-20230911100020690" style="zoom:50%;" />
-<h4 id="四核心算法context_switch"><a class="header" href="#四核心算法context_switch">四、核心算法：context_switch</a></h4>
+<h3 id="核心算法context_switch"><a class="header" href="#核心算法context_switch">核心算法：context_switch</a></h3>
 <p>任务上下文 Context：保存任务状态的最小的寄存器状态集合。</p>
 <p>下图是理解上下文切换的两个角度：</p>
 <img src="./img/img5_5.png" alt="image-20230911100211501" style="zoom:50%;" />
-<h4 id="五上下文-context-包含寄存器"><a class="header" href="#五上下文-context-包含寄存器">五、上下文 Context 包含寄存器:</a></h4>
+<h3 id="上下文-context-包含寄存器"><a class="header" href="#上下文-context-包含寄存器">上下文 Context 包含寄存器:</a></h3>
 <ul>
 <li>ra:：函数返回地址寄存器，这个切换实现了任务执行指令流的切换；</li>
 <li>sp：任务即线程，这个是线程栈；</li>
 <li>s0~s11：按照 riscv 规范，callee 不能改这组寄存器的信息，所以需要保存。</li>
 </ul>
 <img src="./img/img5_6.png" alt="image-20230911100633263" style="zoom:50%;" />
-<h3 id="513-系统内置任务idle-main和gc"><a class="header" href="#513-系统内置任务idle-main和gc">5.1.3 系统内置任务idle, main和gc</a></h3>
+<h2 id="系统内置任务idle-main和gc"><a class="header" href="#系统内置任务idle-main和gc">系统内置任务idle, main和gc</a></h2>
 <img src="./img/img5_7.png" alt="image-20230911101154789" style="zoom:50%;" />
 
                     </main>

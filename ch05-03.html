@@ -169,13 +169,13 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="53-抢占式调度机制与示例"><a class="header" href="#53-抢占式调度机制与示例">5.3 抢占式调度机制与示例</a></h2>
-<h3 id="531-抢占式调度与协作式在框架上的区别"><a class="header" href="#531-抢占式调度与协作式在框架上的区别">5.3.1 抢占式调度与协作式在框架上的区别</a></h3>
+                        <h1 id="抢占式调度机制与示例"><a class="header" href="#抢占式调度机制与示例">抢占式调度机制与示例</a></h1>
+<h2 id="抢占式调度与协作式在框架上的区别"><a class="header" href="#抢占式调度与协作式在框架上的区别">抢占式调度与协作式在框架上的区别</a></h2>
 <p>抢占式调度在协作式自主 yield 的基础上，通过加入时钟中断，确保个别任务不会长期不合理的占据 CPU。</p>
 <img src="./img/img5_10.png" alt="image-20230911105410138" style="zoom:50%;" />
-<h3 id="532-时钟中断与抢占式调度"><a class="header" href="#532-时钟中断与抢占式调度">5.3.2 时钟中断与抢占式调度</a></h3>
+<h2 id="时钟中断与抢占式调度"><a class="header" href="#时钟中断与抢占式调度">时钟中断与抢占式调度</a></h2>
 <img src="./img/img5_11.png" alt="image-20230911105602764" style="zoom:50%;" />
-<h3 id="533-抢占式调度算法-round_robin"><a class="header" href="#533-抢占式调度算法-round_robin">5.3.3 抢占式调度算法 ROUND_ROBIN</a></h3>
+<h2 id="抢占式调度算法-round_robin"><a class="header" href="#抢占式调度算法-round_robin">抢占式调度算法 ROUND_ROBIN</a></h2>
 <p>在协作式调度 FIFO 的基础上，由定时器定时递减<font color=red>当前任务</font>的时间片，耗尽时排到队尾，如此完成各个任务的循环排列。</p>
 <blockquote>
 <p><font color=blue><strong>注👉</strong></font> 
@@ -183,7 +183,7 @@
 </blockquote>
 <img src="./img/img5_12.png" alt="image-20230911105814589" style="zoom:50%;" />
 <img src="./img/img5_13.png" alt="image-20230911110533751" style="zoom:50%;" />
-<h3 id="534-抢占式调度算法-cfscompletely-fair-scheduler"><a class="header" href="#534-抢占式调度算法-cfscompletely-fair-scheduler">5.3.4 抢占式调度算法 CFS(Completely Fair Scheduler)</a></h3>
+<h2 id="抢占式调度算法-cfscompletely-fair-scheduler"><a class="header" href="#抢占式调度算法-cfscompletely-fair-scheduler">抢占式调度算法 CFS(Completely Fair Scheduler)</a></h2>
 <p>当前 vruntime 最小的任务就是当前任务。计算公式：
 $$
 vruntime = init_vruntime + (delta / weight(nice))

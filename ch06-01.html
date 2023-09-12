@@ -169,16 +169,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h2>
-<h3 id="设备管理框架"><a class="header" href="#设备管理框架">设备管理框架</a></h3>
+                        <h1 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h1>
+<h2 id="设备管理框架"><a class="header" href="#设备管理框架">设备管理框架</a></h2>
 <p>AllDevices 管理系统所有的设备，为上层的子系统如文件系统 FS、网络协议栈 NET 提供访问服务。</p>
 <p>三种设备类型：</p>
 <img src="./img/img6_2.png" alt="image-20230911145019737" style="zoom:50%;" />
-<h3 id="设备发现与初始化过程"><a class="header" href="#设备发现与初始化过程">设备发现与初始化过程</a></h3>
+<h2 id="设备发现与初始化过程"><a class="header" href="#设备发现与初始化过程">设备发现与初始化过程</a></h2>
 <img src="./img/img6_3.png" alt="image-20230911145131833" style="zoom:50%;" />
-<h4 id="基于总线发现设备--qemu-平台示例"><a class="header" href="#基于总线发现设备--qemu-平台示例">基于总线发现设备- qemu 平台示例</a></h4>
+<h3 id="基于总线发现设备--qemu-平台示例"><a class="header" href="#基于总线发现设备--qemu-平台示例">基于总线发现设备- qemu 平台示例</a></h3>
 <img src="./img/img6_4.png" alt="image-20230911145250416" style="zoom:50%;" />
-<h4 id="virtio-设备的-probe-过程"><a class="header" href="#virtio-设备的-probe-过程">virtio 设备的 probe 过程</a></h4>
+<h3 id="virtio-设备的-probe-过程"><a class="header" href="#virtio-设备的-probe-过程">virtio 设备的 probe 过程</a></h3>
 <ol>
 <li>
 <p>qemu 模拟器基于命令行产生设备：</p>
@@ -202,18 +202,18 @@
 </li>
 </ol>
 <img src="./img/img6_5.png" alt="image-20230911145802450" style="zoom:50%;" />
-<h4 id="virtio-驱动基本模型"><a class="header" href="#virtio-驱动基本模型">virtio 驱动基本模型</a></h4>
+<h3 id="virtio-驱动基本模型"><a class="header" href="#virtio-驱动基本模型">virtio 驱动基本模型</a></h3>
 <p>virtio 驱动和 virtio 设备交互的两条路：</p>
 <ol>
 <li>主要基于 vring 环形队列：本质上是连续的 Page 页面，在 Guest 和 Host 都可见可写；</li>
 <li>中断响应的通道：主要对等待读取大块数据时是有用。</li>
 </ol>
 <img src="./img/img6_6.png" alt="image-20230911150030496" style="zoom:50%;" />
-<h3 id="中断机制与初始化以-riscv64-为例"><a class="header" href="#中断机制与初始化以-riscv64-为例">中断机制与初始化（以 riscv64 为例）</a></h3>
+<h2 id="中断机制与初始化以-riscv64-为例"><a class="header" href="#中断机制与初始化以-riscv64-为例">中断机制与初始化（以 riscv64 为例）</a></h2>
 <img src="./img/img6_7.png" alt="image-20230911150146713" style="zoom:50%;" />
-<h3 id="块设备驱动---blockdriver"><a class="header" href="#块设备驱动---blockdriver">块设备驱动 - BlockDriver</a></h3>
+<h2 id="块设备驱动---blockdriver"><a class="header" href="#块设备驱动---blockdriver">块设备驱动 - BlockDriver</a></h2>
 <img src="./img/img6_8.png" alt="image-20230911151439938" style="zoom:50%;" />
-<h4 id="块设备驱动-trait---blockdriverops"><a class="header" href="#块设备驱动-trait---blockdriverops">块设备驱动 Trait - BlockDriverOps</a></h4>
+<h3 id="块设备驱动-trait---blockdriverops"><a class="header" href="#块设备驱动-trait---blockdriverops">块设备驱动 Trait - BlockDriverOps</a></h3>
 <img src="./img/img6_9.png" alt="image-20230911151607819" style="zoom: 50%;" />
 
                     </main>

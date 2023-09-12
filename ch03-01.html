@@ -169,37 +169,37 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h2>
-<h3 id="迭代步骤"><a class="header" href="#迭代步骤">迭代步骤</a></h3>
+                        <h1 id="设计与实现"><a class="header" href="#设计与实现">设计与实现</a></h1>
+<h2 id="迭代步骤"><a class="header" href="#迭代步骤">迭代步骤</a></h2>
 <img src="./img/img3_2.png" alt="image-20230905151445642" style="zoom: 33%;" />
-<h3 id="示例流程riscv64"><a class="header" href="#示例流程riscv64">示例流程（riscv64）</a></h3>
+<h2 id="示例流程riscv64"><a class="header" href="#示例流程riscv64">示例流程（riscv64）</a></h2>
 <img src="./img/img3_3.png" alt="image-20230905151554560" style="zoom:50%;" />
-<h4 id="引导过程示例-axhalriscv64"><a class="header" href="#引导过程示例-axhalriscv64">引导过程示例: axhal(riscv64)</a></h4>
+<h3 id="引导过程示例-axhalriscv64"><a class="header" href="#引导过程示例-axhalriscv64">引导过程示例: axhal(riscv64)</a></h3>
 <img src="./img/img3_4.png" alt="image-20230905151803155" style="zoom: 50%;" />
-<h4 id="引导过程示例-axruntime"><a class="header" href="#引导过程示例-axruntime">引导过程示例: axruntime</a></h4>
+<h3 id="引导过程示例-axruntime"><a class="header" href="#引导过程示例-axruntime">引导过程示例: axruntime</a></h3>
 <img src="./img/img3_5.png" alt="image-20230905152234898" style="zoom:50%;" />
 <img src="./img/img3_6.png" alt="image-20230905152308892" style="zoom:50%;" />
 <img src="./img/img3_7.png" alt="image-20230905152347065" style="zoom:50%;" />
-<h4 id="app引导完成转入运行"><a class="header" href="#app引导完成转入运行">app引导完成转入运行</a></h4>
+<h3 id="app引导完成转入运行"><a class="header" href="#app引导完成转入运行">app引导完成转入运行</a></h3>
 <p>应用启动，并基于运行环境提供的各种功能，完成自身的逻辑计算。对于 Helloworld，仅仅需要借助 ulib 中 axstd::println 完成打印输出。</p>
 <img src="./img/img3_8.png" alt="image-20230905152554161" style="zoom:50%;" />
-<h4 id="日志级别控制与-features"><a class="header" href="#日志级别控制与-features">日志级别控制与 features</a></h4>
+<h3 id="日志级别控制与-features"><a class="header" href="#日志级别控制与-features">日志级别控制与 features</a></h3>
 <p>在编译并运行 helloworld 时，可以指定 LOG 环境变量，以输出不同级别的日志。</p>
 <pre><code>make LOG=info run
 </code></pre>
 <p>这是通过 features 传递，改变 kernel 行为的具体方法。可以通过三种方式指定 features：</p>
 <img src="./img/img3_9.png" alt="image-20230905161958548" style="zoom:50%;" />
-<h3 id="附录-相关组件"><a class="header" href="#附录-相关组件">附录 相关组件</a></h3>
+<h2 id="附录-相关组件"><a class="header" href="#附录-相关组件">附录 相关组件</a></h2>
 <ul>
 <li>
-<h4 id="axhal-"><a class="header" href="#axhal-"><code>axhal</code> ：</a></h4>
+<h3 id="axhal-"><a class="header" href="#axhal-"><code>axhal</code> ：</a></h3>
 <ul>
 <li>模块源码位置：<a href="https://github.com/rcore-os/arceos/tree/main/modules/axhal">modules/axhal</a></li>
 <li>模块描述： ArceOS 的硬件抽象层，负责为不同操作平台提供统一的 API。它为指定的操作平台进行引导和初始化过程，并在硬件上提供有用的操作。当前主要支持 pc-x86<code>、</code>qemu-virt-riscv<code>、</code>qemu-virt-aarch64` 等平台。</li>
 </ul>
 </li>
 <li>
-<h4 id="axruntime"><a class="header" href="#axruntime"><code>axruntime</code>：</a></h4>
+<h3 id="axruntime"><a class="header" href="#axruntime"><code>axruntime</code>：</a></h3>
 <ul>
 <li>
 <p>模块源码位置：<a href="(https://github.com/rcore-os/arceos/tree/main/modules/axruntime)">modules/axruntime</a></p>

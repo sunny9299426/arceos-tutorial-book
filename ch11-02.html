@@ -170,16 +170,16 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="未来发展"><a class="header" href="#未来发展">未来发展</a></h1>
-<h3 id="异步"><a class="header" href="#异步">异步</a></h3>
-<h4 id="研究的基础"><a class="header" href="#研究的基础"><strong>研究的基础</strong></a></h4>
+<h2 id="异步"><a class="header" href="#异步">异步</a></h2>
+<h3 id="研究的基础"><a class="header" href="#研究的基础"><strong>研究的基础</strong></a></h3>
 <ol>
 <li>IO 密集型是 AIoT 的典型场景，最适合采用异步</li>
 <li>ArceOS 是应用为中心的 UniKernel OS，相对 Linux 等通用宏内核或微内核，其专用性更适应AIoT 特点</li>
 <li>Rust语言级支持异步，即 async/await</li>
 </ol>
-<h4 id="研究的意义"><a class="header" href="#研究的意义">研究的意义</a></h4>
+<h3 id="研究的意义"><a class="header" href="#研究的意义">研究的意义</a></h3>
 <p>面向 AIoT 的 IO 密集型场景，以组件化方式构建以应用为中心的 UniKernel OS，并发挥 Rust 对异步的内置支持能力。这种方案有可能比基于传统 OS 建立的方案，具有更高的运行效率和更小的Image。</p>
-<h4 id="需要解决的问题"><a class="header" href="#需要解决的问题">需要解决的问题</a></h4>
+<h3 id="需要解决的问题"><a class="header" href="#需要解决的问题">需要解决的问题</a></h3>
 <ol>
 <li>Tokio 本身的改造，提升协程与线程的协作效率；</li>
 <li>Rust 标准库支持 ArceOS 后端，编译时支持 ArceOS 这个 Target；</li>
@@ -194,19 +194,19 @@
 <li>线程，即 OS 的线程。负责执行若干个 task 协程。并且具有特定条件下，steal task 的能力。</li>
 </ol>
 <p><img src="./img/img11_7.png" alt="image-20230911163826826" /></p>
-<h4 id="研究目标"><a class="header" href="#研究目标">研究目标</a></h4>
+<h3 id="研究目标"><a class="header" href="#研究目标">研究目标</a></h3>
 <p>在 ArceOS 平台上，协程与线程的高效协同。涉及调度策略、协程锁与线程锁，消息交换和共享等优化。</p>
-<h3 id="平台移植"><a class="header" href="#平台移植">平台移植</a></h3>
+<h2 id="平台移植"><a class="header" href="#平台移植">平台移植</a></h2>
 <p>树莓派 arm 平台的移植参考。arm 体系结构已存在，基本不用改；platform 增加对应目录，大部分代码可复用 aarch64_common 中内容。</p>
 <img src="./img/img11_8.png" alt="image-20230911163926101" style="zoom:50%;" />
-<h3 id="宏内核微内核"><a class="header" href="#宏内核微内核">宏内核/微内核</a></h3>
+<h2 id="宏内核微内核"><a class="header" href="#宏内核微内核">宏内核/微内核</a></h2>
 <ol>
 <li>从单地址空间到多地址空间；</li>
 <li>从单内核态到内核态+用户态；</li>
 <li>引入系统调用层以及进程相关的功能。</li>
 </ol>
 <img src="./img/img11_9.png" alt="image-20230911164331843" style="zoom:50%;" />
-<h3 id="研究全景图"><a class="header" href="#研究全景图">研究全景图</a></h3>
+<h2 id="研究全景图"><a class="header" href="#研究全景图">研究全景图</a></h2>
 <img src="./img/img11_10.png" alt="image-20230911164426556" style="zoom:50%;" />
 
                     </main>
