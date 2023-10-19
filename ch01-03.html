@@ -174,10 +174,10 @@
                         <h1 id="第三节-应用组件与硬件抽象组件"><a class="header" href="#第三节-应用组件与硬件抽象组件">第三节 应用组件与硬件抽象组件</a></h1>
 <p>从本节开始，我们将开启组件化构造操作系统内核的旅程。</p>
 <p>与传统构造内核的方法不同，组件化构造内核包括两个部分：一是建立一个组件仓库，其中的组件都具有高度可复用性；二是建立一种管理、选择和组合组件的方法与机制。在二者的基础上，我们就可以根据需要，基于组件组合的方式快速定制生产目标内核。</p>
-<img src="./img/组件化构造内核.png" alt="组件化构造内核" style="zoom:48%;" align=center />
+<img src="./img/组件化构造内核.svg" alt="组件化构造内核" />
 <p>本节的实验，我们就对应上面所述的两个部分，分两个步骤进行。</p>
 <p><strong>第一步：对当前版本的单一内核进行分解，形成最初的组件仓库。</strong></p>
-<img src="./img/最早的组件.png" alt="最早的组件" style="zoom:42%;" align=center/>
+<img src="./img/最早的组件.svg" alt="最早的组件" />
 <p>当前内核虽然是 Unikernel 形态，按照功能仍然可以分成系统和应用两层。</p>
 <p><strong>系统层</strong>：迄今为止，我们进行的大部分工作都可以归纳到系统层，大多是针对硬件平台的操作，包括启动模块 boot，控制台模块 console，内存模块 mem 等。这些模块的共同特点：对外提供一个抽象的硬件操作接口，内部则封装了针对 RiscV 体系结构和具体硬件的操作。我们希望把上述接口明确固定下来，形成一个稳定的<strong>硬件抽象层 Hardware Abstract Layer</strong>（简称 HAL）。以 HAL 分界，可以实现上下层组件的解耦。方便我们将来对其它体系结构及平台的支持工作。</p>
 <p><strong>应用层</strong>：目前应用层的工作仅仅是调用 console，向屏幕输出 Hello 信息。注意：我们要把 rust_entry 框架和清零 BSS 分离出去，因为那些属于系统层的功能。</p>
@@ -239,7 +239,7 @@ axhal = { path = &quot;../axhal&quot; }
 </code></pre>
 <p>运行 <code>make run</code> 测试我们第一个组件化方式构造的内核，屏幕输出正常。</p>
 <p>最后，解释一下之前的问题：为什么在启动过程中，组件 axhal 必须通过 extern ABI 的方式调用组件 axorigin 的 main 函数。</p>
-<img src="./img/组件调用关系.png" alt="组件调用关系" style="zoom:42%;" align=center/>
+<img src="./img/组件调用关系.svg" alt="组件调用关系" />
 <p>从图中可以看到，两个组件之间存在相互调用的关系，启动过程中 axhal 调用 axorigin 的 main 函数；运行过程中 axorigin 作为应用需要调用系统组件 axhal 的各种功能。既然 axorigin 已经通过 Cargo.toml 对 axhal 建立了依赖，那么另一个方向的依赖就不成立了，否则就会导致<strong>循环依赖</strong>。因此只好在启动过程中，采用 extern ABI 的方式调用 main 函数。</p>
 <p>在我们将来构造内核的实验中，循环依赖将会是一个比较麻烦的问题。在第三章里，将会引入一个特殊的组件 crate_interface 用于专门处理循环依赖，本质上它仍然是基于 extern ABI，但是基于该组件提供了一种 Rusty 风格的调用方式，代码的可读性更好，同时可以有效减少编程出错的概率。</p>
 
