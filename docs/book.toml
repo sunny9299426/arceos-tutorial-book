@@ -8,10 +8,7 @@ title = "ArceOS简明实验指导"
 edition = "2021"
 [output.html.playpen]
 editable = true
-[output.html.playground]
-editable = true
-copyable = true
-copy-js = true
+editor = "ace"
 line-numbers = true
 [output.html]
 git-repository-url = "https://github.com/rcore-os/arceos-tutorial-book"
