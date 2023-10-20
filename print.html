@@ -172,7 +172,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="前言"><a class="header" href="#前言">前言</a></h1>
+                        <h2 id="前言"><a class="header" href="#前言">前言</a></h2>
 <p>ArceOS 是基于组件化思想构造、以 Rust 为主要开发语言、Unikernel 形态的操作系统。与传统操作系统的构建方式不同，组件是构成 ArceOS 的基本元素。</p>
 <p>本实验指导从零开始，带领大家一步一步的完成 ArceOS 的构建过程。每一步都是一个小型实验，在前一步实验的基础上，以增加和扩展组件的方式，增强 ArceOS 的功能特性，最终形成一个功能相对完备的 Unikernel 操作系统。在实验过程中，我们主要采用 Rust 语言进行开发，探寻如何发挥这种新型语言的特点，实践构建操作系统的新模式和新方法。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="第零章-史前时代---从开机到内核启动"><a class="header" href="#第零章-史前时代---从开机到内核启动">第零章 史前时代 - 从开机到内核启动</a></h2>
@@ -309,12 +309,12 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 </ul>
 <p><em>_start</em> 中当前只有唯一的一行代码 <code>wfi</code>，后面在 qemu 启动时，我们将监控这行代码是否被执行到。</p>
 <p>现在尝试在工作目录 arceos 下编译一下 axorigin 这个工程，需要输入额外的参数：</p>
-<pre><code class="language-shell">cargo build --manifest-path axorigin/Cargo.toml \
+<pre><code class="language-bash">cargo build --manifest-path axorigin/Cargo.toml \
 	--target riscv64gc-unknown-none-elf --target-dir ./target --release
 </code></pre>
 <p><strong>注意</strong>：必须显式指定 <strong>riscv64gc-unknown-none-elf</strong> 这个 target，告诉 Rust 编译器我们的编译目标是 RiscV 架构的裸机程序。</p>
 <p>此时将会收到类似下面的错误：</p>
-<pre><code class="language-shell">error[E0463]: can't find crate for `core`
+<pre><code class="language-bash">error[E0463]: can't find crate for `core`
   |
   = note: the `riscv64gc-unknown-none-elf` target may not be installed
   = help: consider downloading the target with `rustup target add riscv64gc-unknown-none-elf`
@@ -322,7 +322,7 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 </code></pre>
 <p>我们可以参照提示中的命令去下载和安装 target。</p>
 <p>但这里提供另一个解决的办法，在工作目录下直接放配置文件 <strong>rust-toolchain.toml</strong>，来定制符合我们要求的 rust 工具链，</p>
-<pre><code class="language-shell">[toolchain]
+<pre><code class="language-bash">[toolchain]
 profile = &quot;minimal&quot;
 channel = &quot;nightly&quot;
 components = [&quot;rust-src&quot;, &quot;llvm-tools-preview&quot;, &quot;rustfmt&quot;, &quot;clippy&quot;]
@@ -330,7 +330,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 </code></pre>
 <p>把 <strong>riscv64gc-unknown-none-elf</strong> 加入工具链的默认 target 列表；同时 <strong>channel = &quot;nightly&quot;</strong>，因为后面会用到 Rust 的一些实验特性。</p>
 <p>再次编译，还是报错，这次的提示：</p>
-<pre><code class="language-shell">error: `#[panic_handler]` function required, but not found
+<pre><code class="language-bash">error: `#[panic_handler]` function required, but not found
 </code></pre>
 <p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在std标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
 <p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
@@ -345,17 +345,17 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 <span class="boring">}</span></code></pre></pre>
 <p>现在采取最简单的方式：如果遇到不可恢复的异常，程序将会无限循环下去。后面章节实验中，我们将逐步完善这个处理机制。</p>
 <p>再次编译，终于通过了！但是当前输出的是ELF格式，还不能在 qemu 中直接运行，先转为原始二进制格式：</p>
-<pre><code class="language-shell">rust-objcopy --binary-architecture=riscv64 --strip-all -O binary \
+<pre><code class="language-bash">rust-objcopy --binary-architecture=riscv64 --strip-all -O binary \
 	target/riscv64gc-unknown-none-elf/release/axorigin \
 	target/riscv64gc-unknown-none-elf/release/axorigin.bin
 </code></pre>
 <p>得到的 axorigin.bin 就是我们最初版本的内核 image 文件，先用<code>xxd </code>命令查看一下内容：</p>
-<pre><code class="language-shell">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
+<pre><code class="language-bash">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
 00000000: 10500073     0000                    s.P...
 </code></pre>
 <p>这个内核 image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
 <p>终于到了运行时刻！用 qemu 运行一下：</p>
-<pre><code class="language-shell">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
+<pre><code class="language-bash">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
 	-kernel target/riscv64gc-unknown-none-elf/release/axorigin.bin \
 	-D qemu.log -d in_asm
 </code></pre>
@@ -363,7 +363,7 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 <p>现在 qemu 处于等待状态，通过输入 <code>ctrl+a x</code> 退回到 shell。具体操作：先按 ctrl + a，再按 x 键。</p>
 <p>查看本地即当前目录，发现多出一个 qemu.log。</p>
 <p>执行 qemu 时的最后一行参数让模拟器记录了它执行过的代码序列，我们只需要关注日志文件的最后：</p>
-<pre><code class="language-assembly">----------------
+<pre><code class="language-x86asm">----------------
 IN:
 Priv: 1; Virt: 0
 0x80200000:  10500073          wfi
@@ -396,13 +396,13 @@ $(OUT_ELF): FORCE
 </code></pre>
 <p>把 Makefile 放到工作目录 arceos 之下，它定义了一些快捷操作：今后执行 <code>make</code> 就可以编译内核，或者直接执行 <code>make run</code> 来完成编译+运行。完整的 Makefile 内容见<a href="ch09-00.html">附录B</a>。</p>
 <p>尝试在工作目录下测试以下命令的有效性。</p>
-<pre><code class="language-shell">make
+<pre><code class="language-bash">make
 make run
 make clean
 </code></pre>
 <p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照 <a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
 <p>最后看一下我们工作目录的当前状态：</p>
-<pre><code class="language-shell">.
+<pre><code class="language-bash">.
 ├── axorigin
 │   ├── Cargo.toml
 │   └── src
@@ -462,7 +462,7 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>依然是从 _start 入口开始，这次我们直接初始化栈指针寄存器 sp，让它指向栈空间的最高地址，因为栈的方向是从高地址向低地址发展。栈空间 BOOT_STACK 是一个数组，section 标记 &quot;.bss.stack&quot; 表示它在最终的 Image 文件中有固定的位置，该位置由 LDS 文件通过这个标记指定。查看 linker.lds，可以看到我们为启动栈安排的位置就在BSS区域的开头。</p>
-<pre><code class="language-shell">.bss : ALIGN(4K) {
+<pre><code class="language-bash">.bss : ALIGN(4K) {
     boot_stack = .;
     *(.bss.stack)
     . = ALIGN(4K);
@@ -622,7 +622,7 @@ axhal = { path = &quot;../axhal&quot; }
 <pre><code class="language-makefile">LD_SCRIPT := $(CURDIR)/axhal/linker.lds
 </code></pre>
 <p>用 <code>git show --stat</code> 比较当前基于组件化的版本与上一版本在代码方面的变化：</p>
-<pre><code class="language-sh"> axorigin/Cargo.toml                   |  2 +-
+<pre><code class="language-bash"> axorigin/Cargo.toml                   |  2 +-
  axorigin/src/main.rs                  | 12 +++---------
  {axorigin =&gt; axhal}/src/boot.rs       |  0
  {axorigin =&gt; axhal}/src/console.rs    |  0
@@ -644,7 +644,7 @@ axhal = { path = &quot;../axhal&quot; }
 <p>这一章我们完成了内核的初始化，并且向屏幕输出了信息。在此基础上，我们建立了最早的组件集合和组合组件的方式。</p>
 <p>下一章，我们将会针对操作系统内核的第一项重要功能 - 内存管理进行实验。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="附录a"><a class="header" href="#附录a">附录A</a></h2>
-<pre><code class="language-bash editable">OUTPUT_ARCH(riscv)
+<pre><code class="language-x86asm editable">OUTPUT_ARCH(riscv)
 
 BASE_ADDRESS = 0x80200000;
 

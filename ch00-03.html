@@ -203,12 +203,12 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 </ul>
 <p><em>_start</em> 中当前只有唯一的一行代码 <code>wfi</code>，后面在 qemu 启动时，我们将监控这行代码是否被执行到。</p>
 <p>现在尝试在工作目录 arceos 下编译一下 axorigin 这个工程，需要输入额外的参数：</p>
-<pre><code class="language-shell">cargo build --manifest-path axorigin/Cargo.toml \
+<pre><code class="language-bash">cargo build --manifest-path axorigin/Cargo.toml \
 	--target riscv64gc-unknown-none-elf --target-dir ./target --release
 </code></pre>
 <p><strong>注意</strong>：必须显式指定 <strong>riscv64gc-unknown-none-elf</strong> 这个 target，告诉 Rust 编译器我们的编译目标是 RiscV 架构的裸机程序。</p>
 <p>此时将会收到类似下面的错误：</p>
-<pre><code class="language-shell">error[E0463]: can't find crate for `core`
+<pre><code class="language-bash">error[E0463]: can't find crate for `core`
   |
   = note: the `riscv64gc-unknown-none-elf` target may not be installed
   = help: consider downloading the target with `rustup target add riscv64gc-unknown-none-elf`
@@ -216,7 +216,7 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 </code></pre>
 <p>我们可以参照提示中的命令去下载和安装 target。</p>
 <p>但这里提供另一个解决的办法，在工作目录下直接放配置文件 <strong>rust-toolchain.toml</strong>，来定制符合我们要求的 rust 工具链，</p>
-<pre><code class="language-shell">[toolchain]
+<pre><code class="language-bash">[toolchain]
 profile = &quot;minimal&quot;
 channel = &quot;nightly&quot;
 components = [&quot;rust-src&quot;, &quot;llvm-tools-preview&quot;, &quot;rustfmt&quot;, &quot;clippy&quot;]
@@ -224,7 +224,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 </code></pre>
 <p>把 <strong>riscv64gc-unknown-none-elf</strong> 加入工具链的默认 target 列表；同时 <strong>channel = &quot;nightly&quot;</strong>，因为后面会用到 Rust 的一些实验特性。</p>
 <p>再次编译，还是报错，这次的提示：</p>
-<pre><code class="language-shell">error: `#[panic_handler]` function required, but not found
+<pre><code class="language-bash">error: `#[panic_handler]` function required, but not found
 </code></pre>
 <p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在std标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
 <p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
@@ -239,17 +239,17 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 <span class="boring">}</span></code></pre></pre>
 <p>现在采取最简单的方式：如果遇到不可恢复的异常，程序将会无限循环下去。后面章节实验中，我们将逐步完善这个处理机制。</p>
 <p>再次编译，终于通过了！但是当前输出的是ELF格式，还不能在 qemu 中直接运行，先转为原始二进制格式：</p>
-<pre><code class="language-shell">rust-objcopy --binary-architecture=riscv64 --strip-all -O binary \
+<pre><code class="language-bash">rust-objcopy --binary-architecture=riscv64 --strip-all -O binary \
 	target/riscv64gc-unknown-none-elf/release/axorigin \
 	target/riscv64gc-unknown-none-elf/release/axorigin.bin
 </code></pre>
 <p>得到的 axorigin.bin 就是我们最初版本的内核 image 文件，先用<code>xxd </code>命令查看一下内容：</p>
-<pre><code class="language-shell">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
+<pre><code class="language-bash">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
 00000000: 10500073     0000                    s.P...
 </code></pre>
 <p>这个内核 image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
 <p>终于到了运行时刻！用 qemu 运行一下：</p>
-<pre><code class="language-shell">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
+<pre><code class="language-bash">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
 	-kernel target/riscv64gc-unknown-none-elf/release/axorigin.bin \
 	-D qemu.log -d in_asm
 </code></pre>
@@ -257,7 +257,7 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 <p>现在 qemu 处于等待状态，通过输入 <code>ctrl+a x</code> 退回到 shell。具体操作：先按 ctrl + a，再按 x 键。</p>
 <p>查看本地即当前目录，发现多出一个 qemu.log。</p>
 <p>执行 qemu 时的最后一行参数让模拟器记录了它执行过的代码序列，我们只需要关注日志文件的最后：</p>
-<pre><code class="language-assembly">----------------
+<pre><code class="language-x86asm">----------------
 IN:
 Priv: 1; Virt: 0
 0x80200000:  10500073          wfi

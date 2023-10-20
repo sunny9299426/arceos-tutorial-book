@@ -230,7 +230,7 @@ axhal = { path = &quot;../axhal&quot; }
 <pre><code class="language-makefile">LD_SCRIPT := $(CURDIR)/axhal/linker.lds
 </code></pre>
 <p>用 <code>git show --stat</code> 比较当前基于组件化的版本与上一版本在代码方面的变化：</p>
-<pre><code class="language-sh"> axorigin/Cargo.toml                   |  2 +-
+<pre><code class="language-bash"> axorigin/Cargo.toml                   |  2 +-
  axorigin/src/main.rs                  | 12 +++---------
  {axorigin =&gt; axhal}/src/boot.rs       |  0
  {axorigin =&gt; axhal}/src/console.rs    |  0
