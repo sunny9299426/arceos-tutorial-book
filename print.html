@@ -181,25 +181,17 @@
 <p>在此之前，我们首先需要为实验搭建开发和运行环境。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第一节-实验环境"><a class="header" href="#第一节-实验环境">第一节 实验环境</a></h1>
 <p>基于 WSL2+Unbuntu22.04.2 LTS，在此基础上安装：</p>
-<ol>
-<li>安装开发运行的依赖包</li>
-</ol>
+<p>一、开发运行的依赖包</p>
 <pre><code class="language-shell">sudo apt install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev \
 	libgmp-dev gawk build-essential bison flex texinfo gperf libtool \
 	patchutils bc zlib1g-dev libexpat-dev pkg-config  libglib2.0-dev \
 	libpixman-1-dev libsdl2-dev git tmux python3 python3-pip ninja-build
 </code></pre>
-<ol start="2">
-<li>Rust 开发环境</li>
-</ol>
+<p>二、Rust 开发环境</p>
 <pre><code class="language-shell">curl https://sh.rustup.rs -sSf | sh
 </code></pre>
-<ol start="3">
-<li>
-<p>Qemu 模拟器（RiscV64）</p>
-<p>下载并编译针对 RiscV64 架构的模拟器，</p>
-</li>
-</ol>
+<p>三、Qemu 模拟器（RiscV64）
+下载并编译针对 RiscV64 架构的模拟器</p>
 <pre><code class="language-shell">git clone https://git.qemu.org/git/qemu.git --depth 1
 cd qemu
 ./configure --target-list=riscv64-softmmu
@@ -209,47 +201,49 @@ make -j $(nproc)
 <pre><code class="language-shell"># 请注意，/path/to是qemu 的父目录，应调整为实际的安装位置
 export PATH=$PATH:/path/to/qemu/build
 </code></pre>
-<p>随后即可在当前终端 执行<code>source ~/.bashrc</code> 更新系统路径，或者直接重启一个新的终端，使刚才的环境变量设置生效。</p>
-<ol start="4">
-<li>RiscV 工具集</li>
-</ol>
+<p>随后即可在当前终端执行<code>source ~/.bashrc</code> 更新系统路径，或者直接重启一个新的终端，使刚才的环境变量设置生效。</p>
+<p>四、RiscV 工具集</p>
 <pre><code class="language-shell">sudo apt install binutils-riscv64-unknown-elf
 </code></pre>
-<p>​       实验中需要用到其中的 <code>riscv64-unknown-elf-objdump</code> 等调试工具。</p>
+<p>实验中需要用到其中的 <code>riscv64-unknown-elf-objdump</code> 等调试工具。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第二节-计算机启动过程和对内核的要求"><a class="header" href="#第二节-计算机启动过程和对内核的要求">第二节 计算机启动过程和对内核的要求</a></h1>
 <p>计算机启动时，逐个引导 BIOS、BootLoader 和内核。我们实验基于 RiscV64 架构 qemu 模拟器，模拟器对应模拟了这一过程。</p>
-<img src=".\img\启动过程.svg" alt="启动过程" />
+<div style="text-align:center">
+   <img src=".\img\启动过程.svg" alt="启动过程" style="zoom:70%"/>
+</div>
 <p>模拟器 qemu-riscv64 启动时，将会经历几个阶段：</p>
 <ol>
 <li>
 <p>程序寄存器 <strong>PC</strong> 首先被初始化为0x1000的地址；</p>
 </li>
 <li>
-<p>地址0x1000处被 qemu 预先放置了一个 ROM，顺序执行其中包含的寥寥几行代码，**PC **再次跳转到0x8000_0000地址；</p>
+<p>地址 0x1000 处被 qemu 预先放置了一个 ROM，顺序执行其中包含的寥寥几行代码，<strong>PC</strong> 再次跳转到 0x8000_0000 地址；</p>
 </li>
 <li>
-<p>地址0x8000_0000同样被 qemu 预先埋伏了 OpenSBI（后文简称 SBI），并且入口就在开头。由此 SBI 开始进行硬件初始化的工作，为后面操作系统内核的启动准备好条件和环境，其中包括一组基本的 M-Mode 功能调用，将来可以通过调用号对上层提供服务，最后一步从 M-Mode 切换到 S-Mode，并跳转到地址0x8020_0000。</p>
+<p>地址 0x8000_0000 同样被 qemu 预先埋伏了 OpenSBI（后文简称 SBI），并且入口就在开头。由此 SBI 开始进行硬件初始化的工作，为后面操作系统内核的启动准备好条件和环境，其中包括一组基本的 M-Mode 功能调用，将来可以通过调用号对上层提供服务，最后一步从 M-Mode 切换到 S-Mode，并跳转到地址0x8020_0000；</p>
 </li>
 <li>
-<p>地址0x8020_0000就是为内核准备的位置，只要我们把内核加载到此处，并且保证内核入口在开头，就能够获得计算机的控制权。</p>
+<p>地址 0x8020_0000 就是为内核准备的位置，只要我们把内核加载到此处，并且保证内核入口在开头，就能够获得计算机的控制权。</p>
 </li>
 </ol>
 <blockquote>
-<p>RiscV 体系结构及平台在很多方面都体现了设计上的简洁。RISC-V SBI 规范定义了平台固件应当具备的功能和服务接口，多数情况下 SBI 本身就可以代替传统上固件 BIOS/UEFI + BootLoader 的位置和作用，qemu 模拟器同样参照模拟了这一情况，并且把 OpenSBI 集成到 qemu 工程内部。而对于X86 等，qemu 主要仍是延用传统方式，从内嵌 seabios 开始，经过 grub 等 BootLoader，再启动内核。</p>
+<p><font size=2>RiscV 体系结构及平台在很多方面都体现了设计上的简洁。RISC-V SBI 规范定义了平台固件应当具备的功能和服务接口，多数情况下 SBI 本身就可以代替传统上固件 BIOS/UEFI + BootLoader 的位置和作用，qemu 模拟器同样参照模拟了这一情况，并且把 OpenSBI 集成到 qemu 工程内部。而对于X86 等，qemu 主要仍是延用传统方式，从内嵌 seabios 开始，经过 grub 等 BootLoader，再启动内核。</font></p>
 </blockquote>
 <p>总结一下，我们要让的自己开发的内核等候在正确的位置上，并以正确的形式存在：</p>
 <ol>
 <li>
-<p>内核被加载到0x8020_0000地址</p>
+<p>内核被加载到 0x8020_0000 地址</p>
 <p>这是 qemu 的职责，我们只需要指定正确的参数。</p>
 </li>
 <li>
 <p>内核编译后的形式必须是 binary</p>
 <p>Rust 编译器输出的默认执行程序格式是 ELF，它需要被 ELF 加载器解析和加载，ELF 加载器通常是操作系统的内置功能。但是我们开发的就是操作系统内核，除非上一级阶段即 SBI 具备这样的功能，否则我们只能让内核 image 文件以原始 binary 的形式提供。</p>
-<blockquote>
-<p>至少目前 OpenSBI 还没有支持 ELF 的计划。但是确实存在一些其它的 BootLoader 支持这样的功能。</p>
-</blockquote>
 </li>
+</ol>
+<blockquote>
+<p><font size=2>至少目前 OpenSBI 还没有支持 ELF 的计划。但是确实存在一些其它的 BootLoader 支持这样的功能。</font></p>
+</blockquote>
+<ol start="3">
 <li>
 <p>内核入口必须在 Image 文件的开头</p>
 <p>Rust 编译器默认情况下，会自己安排可执行程序文件的分段与符号布局。由于我们必须确保内核入口在最前面，所以需要通过自定义 LDS 文件方式，控制内核 image 文件的布局。我们后面实验将会用到下面的 LDS 文件定义 linker.lds：</p>
@@ -278,9 +272,9 @@ export PATH=$PATH:/path/to/qemu/build
 </code></pre>
 <p>有两个地方需要注意：</p>
 <p>首先是把代码区 .text 作为第一个 section，并且其中*(.text.boot)在*(.text .text.*)之前，后者是代码默认情况下所属的 section 属性。将来我们会把内核入口的代码标记在 .text.boot 区域中，确保它们会被最早执行。</p>
-<p>此外，起始地址 BASE_ADDRESS 就是从0x8020_0000开始，正是内核的运行地址，这样我们就把链接地址和运行地址一致起来，否则那些以绝对寻址方式产生的指令无法正常运行，导致内核崩溃。将来我们当我们启用分页机制之后，会把这个地址固定改成相应的虚拟地址0xffff_ffc0_8020_0000，直观可以发现，似乎这个虚拟地址对物理地址存在一个偏移量0xffff_ffc0_0000_0000，后面章节会介绍与这个偏移量相关的问题。</p>
+<p>此外，起始地址 BASE_ADDRESS 就是从 0x8020_0000 开始，正是内核的运行地址，这样我们就把链接地址和运行地址一致起来，否则那些以绝对寻址方式产生的指令无法正常运行，导致内核崩溃。将来我们当我们启用分页机制之后，会把这个地址固定改成相应的虚拟地址 0xffff_ffc0_8020_0000，直观可以发现，似乎这个虚拟地址对物理地址存在一个偏移量 0xffff_ffc0_0000_0000，后面章节会介绍与这个偏移量相关的问题。</p>
 <blockquote>
-<p>注：如果此时就把 BASE_ADDRESS 设置为0xffff_ffc0_8020_0000或者其它的什么值，似乎程序最初也可以正常运行一部分代码。主要原因是，内核启动早期的那些汇编指令，通常会被有意保持为相对寻址，即它们是位置无关指令，BASE_ADDRESS 对它们不起作用。但是相对寻址的地址范围受到限制，我们不能要求内核完全采用这种寻址方式，通常只是要求在启用分页之前的指令必须是相对寻址方式。</p>
+<p><font size=2>注：如果此时就把 BASE_ADDRESS 设置为 0xffff_ffc0_8020_0000或者其它的什么值，似乎程序最初也可以正常运行一部分代码。主要原因是，内核启动早期的那些汇编指令，通常会被有意保持为相对寻址，即它们是位置无关指令，BASE_ADDRESS 对它们不起作用。但是相对寻址的地址范围受到限制，我们不能要求内核完全采用这种寻址方式，通常只是要求在启用分页之前的指令必须是相对寻址方式。</font></p>
 </blockquote>
 <p>LDS 中还有一些其它的关键信息，在后边章节涉及时再详细介绍。完整的 linker.lds 文件见<a href="ch08-00.html">附录A</a>。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第三节-内核第一行代码"><a class="header" href="#第三节-内核第一行代码">第三节 内核第一行代码</a></h1>
@@ -289,7 +283,7 @@ export PATH=$PATH:/path/to/qemu/build
 <p>在工作目录 <em>arceos</em> 中，通过 <code>cargo new axorigin</code> 建立第一个工程 axorigin，默认会产生一个基于 Rust std 库的 <em>&quot;Hello, World!&quot;</em> 程序，它预期会在某种操作系统上进行编译和运行。这个的程序入口 main 函数并非真正的程序入口，真正的入口其实是命名为 <em>_start</em> 的函数，Rust 编译器会根据底层操作系统的情况生成 <em>_start</em> 函数的框架，在完成一些必要的运行前准备工作后，再调用 main 函数。此外，打印输出的功能也需要通过 std 标准库去申请底层操作系统的系统调用服务。</p>
 <p>这种默认生成的程序显然不符合我们的需要，因为我们要开发的本身就是操作系统而不是应用，并没有其它的操作系统支撑。换句话说，我们开发的是基于硬件的裸机程序（baremental）。在这种情况下，std 库是不存在的，也无法指望Rust编译器为我们生成 _start函数，我们需要自己定义 <em>_start</em> 函数，并通过管理硬件资源实现应用的需求。</p>
 <p>修改 main.rs，删除原有实现，建立最初的内核的程序入口框架。</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span>#![no_std]
 #![no_main]
 
@@ -340,7 +334,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 </code></pre>
 <p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在std标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
 <p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use core::panic::PanicInfo;
 
@@ -406,7 +400,7 @@ $(OUT_ELF): FORCE
 make run
 make clean
 </code></pre>
-<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照<a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
+<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照 <a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
 <p>最后看一下我们工作目录的当前状态：</p>
 <pre><code class="language-shell">.
 ├── axorigin
@@ -441,7 +435,7 @@ make clean
 <p>每一项初始工作都具有特定的作用，并且与后续的工作相关。</p>
 <p>这一节作为起步阶段，首先完成<strong>第5步</strong>，通过建立栈，尽快脱离晦涩的汇编语言，进入 Rust 的编程世界，今后就可以通过 Rust 高级语言实现内核功能。启动过程中的其它工作项，我们将在扩展对应的内核功能时，再回头进行补充。例如下节我们会补上<strong>第3步</strong>。</p>
 <p>首先，把引导启动作为独立的功能模块 boot，对应的 boot.rs 如下：</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>const TASK_STACK_SIZE: usize = 0x40000; // 256 K
 
@@ -480,7 +474,7 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 <p>一旦建立栈，我们就具备了进行函数调用的能力。类似于其它高级语言，Rust 函数调用同样是基于栈。下面就可以调用 Rust 函数了。</p>
 <p>首先取得 rust_entry 的入口地址，然后调用。按照 RiscV 规范，a0 到 a7 寄存器分别作为函数调用的前 8 个参数，当下只有 a0 和 a1 是有效的。这两个寄存器由上一级引导程序 SBI 设置，a0 保存了 HartID，也就是当前 cpu 核的硬件 ID；a1 则指向了一块内存区，其中保存的是描述底层平台硬件信息的设备树，即 dtb。内核从启动到调用这个函数的过程中，避开了对 a0 和 a1 的使用。如果过程中，因为不得以的原因必须使用它们，必须在启动开始时对它们进行保存，通常方式时暂存到 s0 和 s1，然后在调用 rust_entry 前恢复回来。这个就是本节开始时，提到的<strong>第 1 项</strong>任务，将来会看到这种处理的必要性。</p>
 <p>函数 rust_entry 定义在 main.rs 中：</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span>#![no_std]
 #![no_main]
 #![feature(asm_const)]
@@ -500,14 +494,14 @@ unsafe extern &quot;C&quot; fn rust_entry(_hartid: usize, _dtb: usize) {
 <p>另外注意，rust_entry 带有的两个参数 <em>_hartid</em> 和 <em>_dtb</em>，就是通过前面说的 a0 和 a1 寄存器传入的，将来会用到它们。</p>
 <p>用 <code>make run</code> 编译并执行后，打开 qemu.log 并跳到文件末尾，可以看到从0x80200000到0x8020001c这段范围执行的指令序列与我们编写的汇编代码等效，证明内核成功完成的最早的启动和初始化过程，并且进入到rust函数中。</p>
 <blockquote>
-<p>从 qemu.log 中看到的指令，在形式上与我们编写的汇编指令有一点出入。</p>
-<p>主要是因为我们用了一些伪指令，大家可通过 RiscV ASM 手册，查阅这些伪指令与实际指令的对应关系。</p>
+<p><font size=2>从 qemu.log 中看到的指令，在形式上与我们编写的汇编指令有一点出入。</font>
+<font size=2>主要是因为我们用了一些伪指令，大家可通过 RiscV ASM 手册，查阅这些伪指令与实际指令的对应关系。</font></p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第二节-sbi功能调用"><a class="header" href="#第二节-sbi功能调用">第二节 SBI功能调用</a></h1>
 <p>到目前为止，我们还看不到内核的输出信息，只能通过查看 qemu 跟踪日志，确认工作成果。现在是实现打印输出的时候了！</p>
 <p>有两个办法可以让内核支持 console，一是通过管理 Uart 串口设备进行输出，二是直接调用 OpenSBI 提供的功能。前一个方式实际是实现驱动，但目前我们连最基础的内存管理都未能完成，缺乏实现驱动的条件；所以决定采用第二个办法。</p>
 <p>前面一章提到，OpenSBI 提供了一系列功能调用，可以通过调用号去请求 SBI 为我们的内核完成所需工作。查阅 OpenSBI 文档，发现功能调用 <strong>console_putchar</strong> 具有打印输出一个字符的能力，正可以作为输出功能的基础。然后从 crate.io 中，我们找到了 sbi-rt 这个现成的库，它封装了对 sbi 功能调用的各种方法。现在就使用它来实现 console 模块。</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>/// Writes a byte to the console.
 pub fn putchar(c: u8) {
@@ -523,17 +517,17 @@ pub fn write_bytes(bytes: &amp;[u8]) {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>在 Cargo.toml 中，引入对 sbi-rt 的依赖</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>[dependencies]
 sbi-rt = { version = &quot;0.0.2&quot;, features = [&quot;legacy&quot;] }
 <span class="boring">}</span></code></pre></pre>
 <p>然后把 <code>mod console;</code>引入 main.rs，就可以向屏幕输出字符串了。</p>
 <blockquote>
-<p>现在还不能支持以println!宏之类的方式输入可变参数，这个特性需要动态内存分配功能的支持。</p>
+<p><font size=2>现在还不能支持以println!宏之类的方式输入可变参数，这个特性需要动态内存分配功能的支持。</font></p>
 </blockquote>
 <p>在 main.rs 中，替换掉那个 <code>wfi </code>指令，正式向屏幕输出一句话：</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>mod console;
 
@@ -545,7 +539,7 @@ unsafe extern &quot;C&quot; fn rust_entry(_hartid: usize, _dtb: usize) {
 <p>虽然工作取得了进展，但我们现在启动的内核还存在一些隐患，其中最主要的一点是上节开头提到的<strong>第3项</strong>，初始化 BSS 区域。</p>
 <p>BSS 是构成内核 Image 的一个特殊的数据区，编译器会把程序中初始值为零的全局变量等放到这个区域，也就是说，该区域必须在使用之前清零。眼下我们的内核程序还不涉及这种类型的符号，但是在将来很快就会出现。</p>
 <p>编译器不保证进行 BSS 清零工作，作为内核，也没有其它程序替我们完成，那就只有自己清零。增加模块 mem：</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>/// Fills the `.bss` section with zeros.
 pub(crate) fn clear_bss() {
@@ -561,7 +555,7 @@ extern &quot;C&quot; {
 }
 <span class="boring">}</span></code></pre></pre>
 <p>在 main.rs，引入 mem 模块，并确保在进入 rust_entry 时，首先执行清零。</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>unsafe extern &quot;C&quot; fn rust_entry(_hartid: usize, _dtb: usize) {
     mem::clear_bss();
@@ -572,16 +566,20 @@ extern &quot;C&quot; {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="第三节-应用组件与硬件抽象组件"><a class="header" href="#第三节-应用组件与硬件抽象组件">第三节 应用组件与硬件抽象组件</a></h1>
 <p>从本节开始，我们将开启组件化构造操作系统内核的旅程。</p>
 <p>与传统构造内核的方法不同，组件化构造内核包括两个部分：一是建立一个组件仓库，其中的组件都具有高度可复用性；二是建立一种管理、选择和组合组件的方法与机制。在二者的基础上，我们就可以根据需要，基于组件组合的方式快速定制生产目标内核。</p>
-<img src="./img/组件化构造内核.svg" alt="组件化构造内核" />
+<div style="text-align:center">
+   <img src="./img/组件化构造内核.svg" alt="组件化构造内核"  style="zoom:70%"/>
+</div>
 <p>本节的实验，我们就对应上面所述的两个部分，分两个步骤进行。</p>
 <p><strong>第一步：对当前版本的单一内核进行分解，形成最初的组件仓库。</strong></p>
-<img src="./img/最早的组件.svg" alt="最早的组件" />
+<div style="text-align:center">
+   <img src="./img/最早的组件.svg" alt="最早的组件"   style="zoom:100%"/>
+</div>
 <p>当前内核虽然是 Unikernel 形态，按照功能仍然可以分成系统和应用两层。</p>
 <p><strong>系统层</strong>：迄今为止，我们进行的大部分工作都可以归纳到系统层，大多是针对硬件平台的操作，包括启动模块 boot，控制台模块 console，内存模块 mem 等。这些模块的共同特点：对外提供一个抽象的硬件操作接口，内部则封装了针对 RiscV 体系结构和具体硬件的操作。我们希望把上述接口明确固定下来，形成一个稳定的<strong>硬件抽象层 Hardware Abstract Layer</strong>（简称 HAL）。以 HAL 分界，可以实现上下层组件的解耦。方便我们将来对其它体系结构及平台的支持工作。</p>
 <p><strong>应用层</strong>：目前应用层的工作仅仅是调用 console，向屏幕输出 Hello 信息。注意：我们要把 rust_entry 框架和清零 BSS 分离出去，因为那些属于系统层的功能。</p>
-<p>基于这样的层次划分，我们就建立起最初的两个组件 axhal 和 axorigin。其中，axorigin 继承了原始内核工程的名字，但它的身份已经降级成为一个应用组件，将来必须与 axhal 等系统组件配合来构成完整的 Unikernel 内核。</p>
-<p><strong>axhal 组件</strong>：封装系统层的所有模块，从外部形式看，它是一个 lib 形式的 crate。但是从启动角度，由于它的 boot 模块包含了内核的 _start 入口，其实是首先运行的，然后才会去启动应用组件。看一下这个 crate 的根模块 lib.rs：</p>
-<pre><pre class="playground"><code class="language-rust edition2021">#![no_std]
+<p>基于这样的层次划分，我们就建立起最初的两个组件 axhal 和 axorigin。其中 axorigin 继承了原始内核工程的名字，但它的身份已经降级成为一个应用组件，将来必须与 axhal 等系统组件配合来构成完整的 Unikernel 内核。</p>
+<p><strong>axhal 组件</strong>：封装系统层的所有模块，从外形看，它是一个 lib 形式的 crate。但是从启动角度，由于它的 boot 模块包含了内核的 _start 入口，其实是首先运行的，然后才会去启动应用组件。看一下这个 crate 的根模块 lib.rs：</p>
+<pre><pre class="playground"><code class="language-rust editable edition2021">#![no_std]
 #![feature(asm_const)]
 
 mod lang_items;
@@ -596,10 +594,10 @@ unsafe extern &quot;C&quot; fn rust_entry(hartid: usize, dtb: usize) {
     mem::clear_bss();
     main(hartid, dtb);
 }</code></pre></pre>
-<p>组件 axhal 继承了上一版本内核几乎所有的模块，以及 rust_entry 框架，只是把直接调用 console 进行打印的那一行代码，替换成一个外部函数 main，这个 main 函数就是应用组件的入口。这里可能会产生一个疑问，为什么需要通过 extern ABI 这种外部函数的形式去调用？而不能以引入依赖 crate 的方式去调用？后面会说明这一原因。</p>
+<p>组件 axhal 继承了上一版本内核几乎所有的模块，以及 rust_entry 框架，只是把直接调用 console 进行打印的那行代码，替换成一个外部函数 main，这个 main 函数就是应用组件的入口。这里可能会产生一个疑问，为什么需要通过 extern ABI 这种外部函数的形式去调用？而不能以引入依赖 crate 的方式去调用？后面会说明这一原因。</p>
 <p><strong>axorigin 组件</strong>：前面提到了，这个组件只是继承了原来内核工程的名字，目前已经退化成一个应用组件。与组件 axhal 相应的，从外部看，axorigin 具有 main.rs 根模块，形式上就是一个 binary crate；但是它自身是无法运行的，需要等待 axhal 组件启动它。</p>
 <p>来看一下 axorigin 当前的 main.rs 实现：</p>
-<pre><pre class="playground"><code class="language-rust edition2021">#![no_std]
+<pre><pre class="playground"><code class="language-rust  editable edition2021">#![no_std]
 #![no_main]
 
 #[no_mangle]
@@ -608,13 +606,13 @@ pub fn main(_hartid: usize, _dtb: usize) {
 }</code></pre></pre>
 <p>主体就是一个 main 函数，正对应 axhal 组件在最后阶段要调用的函数，main 是所有应用类型组件的入口。</p>
 <blockquote>
-<p>这个 main，与我们基于 Linux/Windows 平台进行应用编程时写的 main，其实并无关系，上面<code>#[no_main]</code>已经说明了这一点。这里起这个名字，只是为了适应编程习惯。</p>
+<p><font size=2>这个 main，与我们基于 Linux/Windows 平台进行应用编程时写的 main，其实并无关系，上面<code>#[no_main]</code>已经说明了这一点。这里起这个名字，只是为了适应编程习惯。</font></p>
 </blockquote>
 <p>目前，应用组件 axorigin 在 main 函数中要实现的逻辑非常简单，但是它为我们建立了基本的 Unikernel 应用框架；将来在开发Unikernel 应用时，只需要创建一个应用组件，并在 main 函数中填充我们要实现的业务逻辑即可。应用逻辑开发与系统功能的实现从此分离。</p>
 <p><strong>第二步：对现有的两个组件进行组合，形成可以运行的内核。</strong></p>
 <p>既然两个组件都是 Rust crate 的形式，最简单的组合方式，自然就是利用 Cargo 工具提供的 denpendencies 依赖机制进行连接组合。</p>
 <p>来看 axorigin 的 Cargo.toml：</p>
-<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>[dependencies]
 axhal = { path = &quot;../axhal&quot; }
@@ -637,14 +635,16 @@ axhal = { path = &quot;../axhal&quot; }
 </code></pre>
 <p>运行 <code>make run</code> 测试我们第一个组件化方式构造的内核，屏幕输出正常。</p>
 <p>最后，解释一下之前的问题：为什么在启动过程中，组件 axhal 必须通过 extern ABI 的方式调用组件 axorigin 的 main 函数。</p>
-<img src="./img/组件调用关系.svg" alt="组件调用关系" />
+<div style="text-align:center">
+   <img src="./img/组件调用关系.svg" alt="组件调用关系" style="zoom:80%" />
+</div>
 <p>从图中可以看到，两个组件之间存在相互调用的关系，启动过程中 axhal 调用 axorigin 的 main 函数；运行过程中 axorigin 作为应用需要调用系统组件 axhal 的各种功能。既然 axorigin 已经通过 Cargo.toml 对 axhal 建立了依赖，那么另一个方向的依赖就不成立了，否则就会导致<strong>循环依赖</strong>。因此只好在启动过程中，采用 extern ABI 的方式调用 main 函数。</p>
 <p>在我们将来构造内核的实验中，循环依赖将会是一个比较麻烦的问题。在第三章里，将会引入一个特殊的组件 crate_interface 用于专门处理循环依赖，本质上它仍然是基于 extern ABI，但是基于该组件提供了一种 Rusty 风格的调用方式，代码的可读性更好，同时可以有效减少编程出错的概率。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="本章总结-1"><a class="header" href="#本章总结-1">本章总结</a></h1>
 <p>这一章我们完成了内核的初始化，并且向屏幕输出了信息。在此基础上，我们建立了最早的组件集合和组合组件的方式。</p>
 <p>下一章，我们将会针对操作系统内核的第一项重要功能 - 内存管理进行实验。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="附录a"><a class="header" href="#附录a">附录A</a></h1>
-<pre><code class="language-assembly">OUTPUT_ARCH(riscv)
+<pre><code class="language-assembly editable">OUTPUT_ARCH(riscv)
 
 BASE_ADDRESS = 0x80200000;
 
@@ -706,7 +706,7 @@ SECTIONS
 </code></pre>
 <p>注：启用分页之后，<code>BASE_ADDRESS = 0xffffffc080200000;</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="附录b"><a class="header" href="#附录b">附录B</a></h1>
-<pre><code class="language-makefile"># General options
+<pre><code class="language-makefile editable"># General options
 ARCH ?= riscv64
 TARGET := riscv64gc-unknown-none-elf
 SMP ?= 1
@@ -771,7 +771,7 @@ FORCE:
 
 .PHONY: all build disasm run justrun debug clippy fmt test test_no_fail_fast clean FORCE
 </code></pre>
-<p>注：建立axhal组件之后，把 linker.lds 挪到该组件目录之下，<code>LD_SCRIPT := $(CURDIR)/axhal/linker.lds</code>。</p>
+<p>注：建立axhal组件后，把 linker.lds 挪到该组件目录之下，<code>LD_SCRIPT := $(CURDIR)/axhal/linker.lds</code>。</p>
 
                     </main>
 

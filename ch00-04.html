@@ -201,7 +201,7 @@ $(OUT_ELF): FORCE
 make run
 make clean
 </code></pre>
-<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照<a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
+<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照 <a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
 <p>最后看一下我们工作目录的当前状态：</p>
 <pre><code class="language-shell">.
 ├── axorigin
