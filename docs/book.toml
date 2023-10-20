@@ -12,7 +12,6 @@ editable = true
 editable = true
 copyable = true
 copy-js = true
-editor = "ace"
 line-numbers = true
 [output.html]
 git-repository-url = "https://github.com/rcore-os/arceos-tutorial-book"
