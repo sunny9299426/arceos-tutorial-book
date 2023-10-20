@@ -171,7 +171,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第二节-sbi功能调用"><a class="header" href="#第二节-sbi功能调用">第二节 SBI功能调用</a></h1>
+                        <h2 id="第二节-sbi功能调用"><a class="header" href="#第二节-sbi功能调用">第二节 SBI功能调用</a></h2>
 <p>到目前为止，我们还看不到内核的输出信息，只能通过查看 qemu 跟踪日志，确认工作成果。现在是实现打印输出的时候了！</p>
 <p>有两个办法可以让内核支持 console，一是通过管理 Uart 串口设备进行输出，二是直接调用 OpenSBI 提供的功能。前一个方式实际是实现驱动，但目前我们连最基础的内存管理都未能完成，缺乏实现驱动的条件；所以决定采用第二个办法。</p>
 <p>前面一章提到，OpenSBI 提供了一系列功能调用，可以通过调用号去请求 SBI 为我们的内核完成所需工作。查阅 OpenSBI 文档，发现功能调用 <strong>console_putchar</strong> 具有打印输出一个字符的能力，正可以作为输出功能的基础。然后从 crate.io 中，我们找到了 sbi-rt 这个现成的库，它封装了对 sbi 功能调用的各种方法。现在就使用它来实现 console 模块。</p>

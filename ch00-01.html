@@ -171,31 +171,31 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第一节-实验环境"><a class="header" href="#第一节-实验环境">第一节 实验环境</a></h1>
+                        <h2 id="第一节-实验环境"><a class="header" href="#第一节-实验环境">第一节 实验环境</a></h2>
 <p>基于 WSL2+Unbuntu22.04.2 LTS，在此基础上安装：</p>
 <p>一、开发运行的依赖包</p>
-<pre><code class="language-shell">sudo apt install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev \
+<pre><code class="language-bash">sudo apt install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev \
 	libgmp-dev gawk build-essential bison flex texinfo gperf libtool \
 	patchutils bc zlib1g-dev libexpat-dev pkg-config  libglib2.0-dev \
 	libpixman-1-dev libsdl2-dev git tmux python3 python3-pip ninja-build
 </code></pre>
 <p>二、Rust 开发环境</p>
-<pre><code class="language-shell">curl https://sh.rustup.rs -sSf | sh
+<pre><code class="language-bash">curl https://sh.rustup.rs -sSf | sh
 </code></pre>
 <p>三、Qemu 模拟器（RiscV64）
 下载并编译针对 RiscV64 架构的模拟器</p>
-<pre><code class="language-shell">git clone https://git.qemu.org/git/qemu.git --depth 1
+<pre><code class="language-bash">git clone https://git.qemu.org/git/qemu.git --depth 1
 cd qemu
 ./configure --target-list=riscv64-softmmu
 make -j $(nproc)
 </code></pre>
 <p>编译后得到 build/qemu-system-riscv64，把它的路径加入当前用户环境变量文件 .bashrc，编辑 <code>~/.bashrc</code> 文件（如果使用的是默认的 <code>bash</code> 终端），在文件的末尾加入几行：</p>
-<pre><code class="language-shell"># 请注意，/path/to是qemu 的父目录，应调整为实际的安装位置
+<pre><code class="language-bash"># 请注意，/path/to是qemu 的父目录，应调整为实际的安装位置
 export PATH=$PATH:/path/to/qemu/build
 </code></pre>
 <p>随后即可在当前终端执行<code>source ~/.bashrc</code> 更新系统路径，或者直接重启一个新的终端，使刚才的环境变量设置生效。</p>
 <p>四、RiscV 工具集</p>
-<pre><code class="language-shell">sudo apt install binutils-riscv64-unknown-elf
+<pre><code class="language-bash">sudo apt install binutils-riscv64-unknown-elf
 </code></pre>
 <p>实验中需要用到其中的 <code>riscv64-unknown-elf-objdump</code> 等调试工具。</p>
 
