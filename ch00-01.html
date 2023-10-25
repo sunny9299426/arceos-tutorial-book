@@ -198,6 +198,11 @@ export PATH=$PATH:/path/to/qemu/build
 <pre><code class="language-bash">sudo apt install binutils-riscv64-unknown-elf
 </code></pre>
 <p>实验中需要用到其中的 <code>riscv64-unknown-elf-objdump</code> 等调试工具。</p>
+<p>五、cargo-binutils 工具集</p>
+<pre><code class="language-bash">cargo install cargo-binutils
+rustup component add llvm-tools-preview
+</code></pre>
+<p>实验中需要用到其中的 objcopy 等工具。</p>
 
                     </main>
 

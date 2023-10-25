@@ -206,15 +206,20 @@ export PATH=$PATH:/path/to/qemu/build
 <pre><code class="language-bash">sudo apt install binutils-riscv64-unknown-elf
 </code></pre>
 <p>实验中需要用到其中的 <code>riscv64-unknown-elf-objdump</code> 等调试工具。</p>
+<p>五、cargo-binutils 工具集</p>
+<pre><code class="language-bash">cargo install cargo-binutils
+rustup component add llvm-tools-preview
+</code></pre>
+<p>实验中需要用到其中的 objcopy 等工具。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="第二节-计算机启动过程和对内核的要求"><a class="header" href="#第二节-计算机启动过程和对内核的要求">第二节 计算机启动过程和对内核的要求</a></h2>
-<p>计算机启动时，逐个引导 BIOS、BootLoader 和内核。我们实验基于 RiscV64 架构 qemu 模拟器，模拟器对应模拟了这一过程。</p>
+<p>计算机启动时，逐个引导 BIOS、BootLoader 和内核。本实验基于 RiscV64 架构 qemu 模拟器，模拟器对应模拟了这一过程。</p>
 <div style="text-align:center">
    <img src=".\img\启动过程.svg" alt="启动过程" style="zoom:70%"/>
 </div>
 <p>模拟器 qemu-riscv64 启动时，将会经历几个阶段：</p>
 <ol>
 <li>
-<p>程序寄存器 <strong>PC</strong> 首先被初始化为0x1000的地址；</p>
+<p>程序寄存器 <strong>PC</strong> 首先被初始化为 0x1000 的地址；</p>
 </li>
 <li>
 <p>地址 0x1000 处被 qemu 预先放置了一个 ROM，顺序执行其中包含的寥寥几行代码，<strong>PC</strong> 再次跳转到 0x8000_0000 地址；</p>
@@ -227,9 +232,9 @@ export PATH=$PATH:/path/to/qemu/build
 </li>
 </ol>
 <blockquote>
-<p><font size=2>RiscV 体系结构及平台在很多方面都体现了设计上的简洁。RISC-V SBI 规范定义了平台固件应当具备的功能和服务接口，多数情况下 SBI 本身就可以代替传统上固件 BIOS/UEFI + BootLoader 的位置和作用，qemu 模拟器同样参照模拟了这一情况，并且把 OpenSBI 集成到 qemu 工程内部。而对于X86 等，qemu 主要仍是延用传统方式，从内嵌 seabios 开始，经过 grub 等 BootLoader，再启动内核。</font></p>
+<p><font size=2>RiscV 体系结构及平台在很多方面都体现了设计上的简洁。RISC-V SBI 规范定义了平台固件应当具备的功能和服务接口，多数情况下 SBI 本身就可以代替传统上固件 BIOS/UEFI + BootLoader 的位置和作用，qemu 模拟器同样参照模拟了这一情况，并且把 OpenSBI 集成到 qemu 工程内部。而对于 X86 等，qemu 主要仍是延用传统方式，从内嵌 seabios 开始，经过 grub 等 BootLoader，再启动内核。</font></p>
 </blockquote>
-<p>总结一下，我们要让的自己开发的内核等候在正确的位置上，并以正确的形式存在：</p>
+<p>总结一下，我们要让自己开发的内核等候在正确的位置上，并以正确的形式存在：</p>
 <ol>
 <li>
 <p>内核被加载到 0x8020_0000 地址</p>
@@ -237,7 +242,7 @@ export PATH=$PATH:/path/to/qemu/build
 </li>
 <li>
 <p>内核编译后的形式必须是 binary</p>
-<p>Rust 编译器输出的默认执行程序格式是 ELF，它需要被 ELF 加载器解析和加载，ELF 加载器通常是操作系统的内置功能。但是我们开发的就是操作系统内核，除非上一级阶段即 SBI 具备这样的功能，否则我们只能让内核 image 文件以原始 binary 的形式提供。</p>
+<p>Rust 编译器输出的默认执行程序格式是 ELF，它需要被 ELF 加载器解析和加载，ELF 加载器通常是操作系统的内置功能。但是我们开发的就是操作系统内核，除非上一级即 SBI 具备这样的功能，否则我们只能让内核 Image 文件以原始 binary 的形式提供。</p>
 </li>
 </ol>
 <blockquote>
@@ -246,7 +251,7 @@ export PATH=$PATH:/path/to/qemu/build
 <ol start="3">
 <li>
 <p>内核入口必须在 Image 文件的开头</p>
-<p>Rust 编译器默认情况下，会自己安排可执行程序文件的分段与符号布局。由于我们必须确保内核入口在最前面，所以需要通过自定义 LDS 文件方式，控制内核 image 文件的布局。我们后面实验将会用到下面的 LDS 文件定义 linker.lds：</p>
+<p>Rust 编译器默认情况下，会自己安排可执行程序文件的分段与符号布局。由于我们必须确保内核入口在最前面，所以需要通过自定义 LDS 文件方式，控制内核 Image 文件的布局。后面的实验将会用到下面的 LDS 文件定义 linker.lds：</p>
 </li>
 </ol>
 <pre><code class="language-bash">   OUTPUT_ARCH(riscv)
@@ -272,16 +277,16 @@ export PATH=$PATH:/path/to/qemu/build
 </code></pre>
 <p>有两个地方需要注意：</p>
 <p>首先是把代码区 .text 作为第一个 section，并且其中 *(.text.boot) 在 *(.text .text.*) 之前，后者是代码默认情况下所属的 section 属性。将来我们会把内核入口的代码标记在 .text.boot 区域中，确保它们会被最早执行。</p>
-<p>此外，起始地址 BASE_ADDRESS 就是从 0x8020_0000 开始，正是内核的运行地址，这样我们就把链接地址和运行地址一致起来，否则那些以绝对寻址方式产生的指令无法正常运行，导致内核崩溃。将来我们当我们启用分页机制之后，会把这个地址固定改成相应的虚拟地址 0xffff_ffc0_8020_0000，直观可以发现，似乎这个虚拟地址对物理地址存在一个偏移量 0xffff_ffc0_0000_0000，后面章节会介绍与这个偏移量相关的问题。</p>
+<p>此外，起始地址 BASE_ADDRESS 就是从 0x8020_0000 开始，正是内核的运行地址，这样我们就把链接地址和运行地址一致起来了，否则那些以绝对寻址方式产生的指令无法正常运行，将导致内核崩溃。将来当我们启用分页机制之后，会把这个地址固定改成相应的虚拟地址 0xffff_ffc0_8020_0000，直观可以发现，似乎这个虚拟地址对物理地址存在一个偏移量 0xffff_ffc0_0000_0000，后面章节会介绍与这个偏移量相关的问题。</p>
 <blockquote>
-<p><font size=2>注：如果此时就把 BASE_ADDRESS 设置为 0xffff_ffc0_8020_0000或者其它的什么值，似乎程序最初也可以正常运行一部分代码。主要原因是，内核启动早期的那些汇编指令，通常会被有意保持为相对寻址，即它们是位置无关指令，BASE_ADDRESS 对它们不起作用。但是相对寻址的地址范围受到限制，我们不能要求内核完全采用这种寻址方式，通常只是要求在启用分页之前的指令必须是相对寻址方式。</font></p>
+<p><font size=2>注：如果此时就把 BASE_ADDRESS 设置为 0xffff_ffc0_8020_0000 或者其它的什么值，似乎程序最初也可以正常运行一部分代码。主要原因是，内核启动早期的那些汇编指令，通常会被有意保持为相对寻址，即它们是位置无关指令，BASE_ADDRESS 对它们不起作用。但是相对寻址的地址范围受到限制，我们不能要求内核完全采用这种寻址方式，通常只是要求在启用分页之前的指令必须是相对寻址方式。</font></p>
 </blockquote>
-<p>LDS 中还有一些其它的关键信息，在后边章节涉及时再详细介绍。完整的 linker.lds 文件见<a href="ch08-00.html">附录A</a>。</p>
+<p>LDS 中还有一些其它的关键信息，在后边章节涉及时再详细介绍。完整的 linker.lds 文件见 <a href="ch08-00.html">附录A</a>。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="第三节-内核第一行代码"><a class="header" href="#第三节-内核第一行代码">第三节 内核第一行代码</a></h2>
-<p>现在我们开始动手用 Rust 编写内核第一个的版本 v0.1。虽然它只包含一行代码，但是当我们观测到这行代码被执行时，就意味着计算机经过漫长的启动，终于把系统控制器交到我们内核的手里，后面将会是 ArceOS 的 ShowTime!</p>
+<p>现在我们开始动手用 Rust 编写内核的第一个版本 v0.1。虽然它只包含一行代码，但是当我们观测到这行代码被执行时，就意味着计算机经过漫长的启动，终于把系统控制权交到内核的手里了，后面将会是 ArceOS 的 ShowTime!</p>
 <p>首先建立工作目录 <em>arceos</em>，以后我们将在该目录下逐步建立组件工程，同时维护一些对编译、运行进行支持的配置和脚本。</p>
 <p>在工作目录 <em>arceos</em> 中，通过 <code>cargo new axorigin</code> 建立第一个工程 axorigin，默认会产生一个基于 Rust std 库的 <em>&quot;Hello, World!&quot;</em> 程序，它预期会在某种操作系统上进行编译和运行。这个的程序入口 main 函数并非真正的程序入口，真正的入口其实是命名为 <em>_start</em> 的函数，Rust 编译器会根据底层操作系统的情况生成 <em>_start</em> 函数的框架，在完成一些必要的运行前准备工作后，再调用 main 函数。此外，打印输出的功能也需要通过 std 标准库去申请底层操作系统的系统调用服务。</p>
-<p>这种默认生成的程序显然不符合我们的需要，因为我们要开发的本身就是操作系统而不是应用，并没有其它的操作系统支撑。换句话说，我们开发的是基于硬件的裸机程序（baremental）。在这种情况下，std 库是不存在的，也无法指望Rust编译器为我们生成 _start函数，我们需要自己定义 <em>_start</em> 函数，并通过管理硬件资源实现应用的需求。</p>
+<p>这种默认生成的程序显然不符合我们的需要，因为我们要开发的程序本身就是操作系统而不是应用，并没有其它的操作系统支撑。换句话说，我们开发的是基于硬件的裸机程序（baremental）。在这种情况下，std 库是不存在的，也无法指望 Rust 编译器为我们生成 <em>_start</em> 函数，我们需要自己定义 <em>_start</em> 函数，并通过管理硬件资源实现应用的需求。</p>
 <p>修改 main.rs，删除原有实现，建立最初的内核的程序入口框架。</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span>#![no_std]
@@ -301,14 +306,14 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 <p>同时，对 <em>_start</em> 标记两个属性：</p>
 <ul>
 <li>
-<p>[link_section = &quot;.text.boot&quot;]：如上节所说，要求编译器把*_start *函数代码被放置在 Image 文件的开头，内核运行从此处开始。</p>
+<p>[link_section = &quot;.text.boot&quot;]：如上节所说，要求编译器把 <em>_start</em> 函数代码放置在 Image 文件的开头，内核运行从此处开始。</p>
 </li>
 <li>
 <p>[no_mangle]：要求编译器保持 <em>_start</em> 函数名称不变，这个入口符号是必须存在的。否则，编译器默认会对符号名称进行混淆。</p>
 </li>
 </ul>
 <p><em>_start</em> 中当前只有唯一的一行代码 <code>wfi</code>，后面在 qemu 启动时，我们将监控这行代码是否被执行到。</p>
-<p>现在尝试在工作目录 arceos 下编译一下 axorigin 这个工程，需要输入额外的参数：</p>
+<p>现在尝试在工作目录 arceos 下编译 axorigin 这个工程，需要输入额外的参数：</p>
 <pre><code class="language-bash">cargo build --manifest-path axorigin/Cargo.toml \
 	--target riscv64gc-unknown-none-elf --target-dir ./target --release
 </code></pre>
@@ -332,7 +337,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 <p>再次编译，还是报错，这次的提示：</p>
 <pre><code class="language-bash">error: `#[panic_handler]` function required, but not found
 </code></pre>
-<p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在std标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
+<p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在 std 标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
 <p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -349,11 +354,11 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 	target/riscv64gc-unknown-none-elf/release/axorigin \
 	target/riscv64gc-unknown-none-elf/release/axorigin.bin
 </code></pre>
-<p>得到的 axorigin.bin 就是我们最初版本的内核 image 文件，先用<code>xxd </code>命令查看一下内容：</p>
+<p>得到的 axorigin.bin 就是我们最初版本的内核 Image 文件，先用<code>xxd </code>命令查看一下内容：</p>
 <pre><code class="language-bash">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
 00000000: 10500073     0000                    s.P...
 </code></pre>
-<p>这个内核 image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
+<p>这个内核 Image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
 <p>终于到了运行时刻！用 qemu 运行一下：</p>
 <pre><code class="language-bash">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
 	-kernel target/riscv64gc-unknown-none-elf/release/axorigin.bin \
@@ -361,7 +366,7 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 </code></pre>
 <p>成功！屏幕输出 OpenSBI 的启动信息。但是对我们的内核来说，目前还什么事都没有干，自然不会有输出。</p>
 <p>现在 qemu 处于等待状态，通过输入 <code>ctrl+a x</code> 退回到 shell。具体操作：先按 ctrl + a，再按 x 键。</p>
-<p>查看本地即当前目录，发现多出一个 qemu.log。</p>
+<p>查看当前目录，发现多出一个 qemu.log。</p>
 <p>执行 qemu 时的最后一行参数让模拟器记录了它执行过的代码序列，我们只需要关注日志文件的最后：</p>
 <pre><code class="language-x86asm">----------------
 IN:
@@ -369,7 +374,7 @@ Priv: 1; Virt: 0
 0x80200000:  10500073          wfi
 0x80200004:  0000              illegal
 </code></pre>
-<p>qemu 在执行过程的最后阶段，到达了预设的内核入口地址0x8020_0000，并且执行的正是我们安排的 <code>wfi</code> 指令。这证明：我们之前的努力获得了成功，从此计算机(模拟器)的控制权就落入我们内核的手中，后面将通过一步步的工作逐渐增强完善内核的功能。</p>
+<p>qemu 在执行过程的最后阶段，到达了预设的内核入口地址 0x8020_0000，并且执行的正是我们安排的 <code>wfi</code> 指令。这证明：我们之前的努力获得了成功，从此计算机(模拟器)的控制权就落入我们内核的手中，后面将通过一步步的工作逐渐增强完善内核的功能。</p>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="第四节-编译与运行环境"><a class="header" href="#第四节-编译与运行环境">第四节 编译与运行环境</a></h2>
 <p>我们成功完成了第一个内核版本的编译和运行实验，但是前面命令输入的过程太过繁琐了。下面来建立一个 Makefile，以简化输入工作。</p>
 <pre><code class="language-makefile">LD_SCRIPT := $(CURDIR)/linker.lds
@@ -400,7 +405,7 @@ $(OUT_ELF): FORCE
 make run
 make clean
 </code></pre>
-<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照 <a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
+<p>最后值得<strong>注意</strong>的一点：Makefile 导出了环境变量 RUSTFLAGS，通过它通知 Rust，在链接时使用我们自定义的 linker.lds 控制 Image 布局。在上一节，我们虽然漏掉了这一步骤，但是结果依然是正常的。原因大家已经看到了，当前的 Image 即 axorigin.bin 只包含一条指令，有无布局文件对结果毫无影响。今后随着代码的增加，LDS 文件将会起到关键作用。参照 <a href="ch08-00.html">附录A</a> 在工作目录下建立 linker.lds。</p>
 <p>最后看一下我们工作目录的当前状态：</p>
 <pre><code class="language-bash">.
 ├── axorigin

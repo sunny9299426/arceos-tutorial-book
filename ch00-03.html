@@ -172,10 +172,10 @@
                 <div id="content" class="content">
                     <main>
                         <h2 id="第三节-内核第一行代码"><a class="header" href="#第三节-内核第一行代码">第三节 内核第一行代码</a></h2>
-<p>现在我们开始动手用 Rust 编写内核第一个的版本 v0.1。虽然它只包含一行代码，但是当我们观测到这行代码被执行时，就意味着计算机经过漫长的启动，终于把系统控制器交到我们内核的手里，后面将会是 ArceOS 的 ShowTime!</p>
+<p>现在我们开始动手用 Rust 编写内核的第一个版本 v0.1。虽然它只包含一行代码，但是当我们观测到这行代码被执行时，就意味着计算机经过漫长的启动，终于把系统控制权交到内核的手里了，后面将会是 ArceOS 的 ShowTime!</p>
 <p>首先建立工作目录 <em>arceos</em>，以后我们将在该目录下逐步建立组件工程，同时维护一些对编译、运行进行支持的配置和脚本。</p>
 <p>在工作目录 <em>arceos</em> 中，通过 <code>cargo new axorigin</code> 建立第一个工程 axorigin，默认会产生一个基于 Rust std 库的 <em>&quot;Hello, World!&quot;</em> 程序，它预期会在某种操作系统上进行编译和运行。这个的程序入口 main 函数并非真正的程序入口，真正的入口其实是命名为 <em>_start</em> 的函数，Rust 编译器会根据底层操作系统的情况生成 <em>_start</em> 函数的框架，在完成一些必要的运行前准备工作后，再调用 main 函数。此外，打印输出的功能也需要通过 std 标准库去申请底层操作系统的系统调用服务。</p>
-<p>这种默认生成的程序显然不符合我们的需要，因为我们要开发的本身就是操作系统而不是应用，并没有其它的操作系统支撑。换句话说，我们开发的是基于硬件的裸机程序（baremental）。在这种情况下，std 库是不存在的，也无法指望Rust编译器为我们生成 _start函数，我们需要自己定义 <em>_start</em> 函数，并通过管理硬件资源实现应用的需求。</p>
+<p>这种默认生成的程序显然不符合我们的需要，因为我们要开发的程序本身就是操作系统而不是应用，并没有其它的操作系统支撑。换句话说，我们开发的是基于硬件的裸机程序（baremental）。在这种情况下，std 库是不存在的，也无法指望 Rust 编译器为我们生成 <em>_start</em> 函数，我们需要自己定义 <em>_start</em> 函数，并通过管理硬件资源实现应用的需求。</p>
 <p>修改 main.rs，删除原有实现，建立最初的内核的程序入口框架。</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span>#![no_std]
@@ -195,14 +195,14 @@ unsafe extern &quot;C&quot; fn _start() -&gt; ! {
 <p>同时，对 <em>_start</em> 标记两个属性：</p>
 <ul>
 <li>
-<p>[link_section = &quot;.text.boot&quot;]：如上节所说，要求编译器把*_start *函数代码被放置在 Image 文件的开头，内核运行从此处开始。</p>
+<p>[link_section = &quot;.text.boot&quot;]：如上节所说，要求编译器把 <em>_start</em> 函数代码放置在 Image 文件的开头，内核运行从此处开始。</p>
 </li>
 <li>
 <p>[no_mangle]：要求编译器保持 <em>_start</em> 函数名称不变，这个入口符号是必须存在的。否则，编译器默认会对符号名称进行混淆。</p>
 </li>
 </ul>
 <p><em>_start</em> 中当前只有唯一的一行代码 <code>wfi</code>，后面在 qemu 启动时，我们将监控这行代码是否被执行到。</p>
-<p>现在尝试在工作目录 arceos 下编译一下 axorigin 这个工程，需要输入额外的参数：</p>
+<p>现在尝试在工作目录 arceos 下编译 axorigin 这个工程，需要输入额外的参数：</p>
 <pre><code class="language-bash">cargo build --manifest-path axorigin/Cargo.toml \
 	--target riscv64gc-unknown-none-elf --target-dir ./target --release
 </code></pre>
@@ -226,7 +226,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 <p>再次编译，还是报错，这次的提示：</p>
 <pre><code class="language-bash">error: `#[panic_handler]` function required, but not found
 </code></pre>
-<p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在std标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
+<p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在 std 标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
 <p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -243,11 +243,11 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 	target/riscv64gc-unknown-none-elf/release/axorigin \
 	target/riscv64gc-unknown-none-elf/release/axorigin.bin
 </code></pre>
-<p>得到的 axorigin.bin 就是我们最初版本的内核 image 文件，先用<code>xxd </code>命令查看一下内容：</p>
+<p>得到的 axorigin.bin 就是我们最初版本的内核 Image 文件，先用<code>xxd </code>命令查看一下内容：</p>
 <pre><code class="language-bash">xxd -e target/riscv64gc-unknown-none-elf/release/axorigin.bin
 00000000: 10500073     0000                    s.P...
 </code></pre>
-<p>这个内核 image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
+<p>这个内核 Image 只有 6 个字节，对照 RiscV 指令手册，最前面的四个字节正是 <code>wfi</code> 的指令编码。这个结果有点意外，我们在前面做的一系列考虑和具体工作，在 Rust 看来，只有那一行代码是有意义的；就连 Rust 自己要求实现的 panic_handler 最终也被它忽略了:-)。不过这个内核文件对我们下面的实验已经足够了。</p>
 <p>终于到了运行时刻！用 qemu 运行一下：</p>
 <pre><code class="language-bash">qemu-system-riscv64 -m 128M -machine virt -bios default -nographic \
 	-kernel target/riscv64gc-unknown-none-elf/release/axorigin.bin \
@@ -255,7 +255,7 @@ fn panic(_info: &amp;PanicInfo) -&gt; ! {
 </code></pre>
 <p>成功！屏幕输出 OpenSBI 的启动信息。但是对我们的内核来说，目前还什么事都没有干，自然不会有输出。</p>
 <p>现在 qemu 处于等待状态，通过输入 <code>ctrl+a x</code> 退回到 shell。具体操作：先按 ctrl + a，再按 x 键。</p>
-<p>查看本地即当前目录，发现多出一个 qemu.log。</p>
+<p>查看当前目录，发现多出一个 qemu.log。</p>
 <p>执行 qemu 时的最后一行参数让模拟器记录了它执行过的代码序列，我们只需要关注日志文件的最后：</p>
 <pre><code class="language-x86asm">----------------
 IN:
@@ -263,7 +263,7 @@ Priv: 1; Virt: 0
 0x80200000:  10500073          wfi
 0x80200004:  0000              illegal
 </code></pre>
-<p>qemu 在执行过程的最后阶段，到达了预设的内核入口地址0x8020_0000，并且执行的正是我们安排的 <code>wfi</code> 指令。这证明：我们之前的努力获得了成功，从此计算机(模拟器)的控制权就落入我们内核的手中，后面将通过一步步的工作逐渐增强完善内核的功能。</p>
+<p>qemu 在执行过程的最后阶段，到达了预设的内核入口地址 0x8020_0000，并且执行的正是我们安排的 <code>wfi</code> 指令。这证明：我们之前的努力获得了成功，从此计算机(模拟器)的控制权就落入我们内核的手中，后面将通过一步步的工作逐渐增强完善内核的功能。</p>
 
                     </main>
 
