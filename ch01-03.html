@@ -214,9 +214,9 @@ pub fn main(_hartid: usize, _dtb: usize) {
 }</code></pre></pre>
 <p>主体就是一个 main 函数，正对应 axhal 组件在最后阶段要调用的函数，main 是所有应用类型组件的入口。</p>
 <blockquote>
-<p><font size=2>这个 main，与我们基于 Linux/Windows 平台进行应用编程时写的 main，其实并无关系，上面<code>#[no_main]</code>已经说明了这一点。这里起这个名字，只是为了适应编程习惯。</font></p>
+<p><font size=2>这个 main，与我们基于 Linux/Windows 平台进行应用编程时写的 main，其实并无关系，上面 <code>#[no_main]</code> 已经说明了这一点。这里起这个名字，只是为了适应编程习惯。</font></p>
 </blockquote>
-<p>目前，应用组件 axorigin 在 main 函数中要实现的逻辑非常简单，但是它为我们建立了基本的 Unikernel 应用框架；将来在开发Unikernel 应用时，只需要创建一个应用组件，并在 main 函数中填充我们要实现的业务逻辑即可。应用逻辑开发与系统功能的实现从此分离。</p>
+<p>目前，应用组件 axorigin 在 main 函数中要实现的逻辑非常简单，但是它为我们建立了基本的 Unikernel 应用框架；将来在开发 Unikernel 应用时，只需要创建一个应用组件，并在 main 函数中填充我们要实现的业务逻辑即可。应用逻辑开发与系统功能的实现从此分离。</p>
 <p><strong>第二步：对现有的两个组件进行组合，形成可以运行的内核。</strong></p>
 <p>既然两个组件都是 Rust crate 的形式，最简单的组合方式，自然就是利用 Cargo 工具提供的 denpendencies 依赖机制进行连接组合。</p>
 <p>来看 axorigin 的 Cargo.toml：</p>
