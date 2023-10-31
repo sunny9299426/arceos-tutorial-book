@@ -183,7 +183,7 @@
 </ol>
 <p>每一项初始化工作都具有特定的作用，并且与后续的工作相关。</p>
 <p>这一节作为起步阶段，首先完成<strong>第 5 步</strong>，通过建立栈，尽快脱离晦涩的汇编语言，进入 Rust 的编程世界，今后就可以通过 Rust 高级语言实现内核功能。启动过程中的其它工作项，我们将在扩展对应的内核功能时，再回头进行补充。例如下节我们会补上<strong>第 3 步</strong>。</p>
-<p>首先，把引导启动作为独立的功能模块 boot，对应的 boot.rs 如下：</p>
+<p>首先，把引导启动作为独立的功能模块 boot，对应的 boot.rs（放置于 src 目录下）如下：</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>const TASK_STACK_SIZE: usize = 0x40000; // 256 K

@@ -195,7 +195,7 @@ $(OUT_ELF): FORCE
     cargo build --manifest-path $(APP)/Cargo.toml --release \
         --target $(TARGET) --target-dir $(CURDIR)/target $(FEATURES)
 </code></pre>
-<p>把 Makefile 放到工作目录 arceos 之下，它定义了一些快捷操作：今后执行 <code>make</code> 就可以编译内核，或者直接执行 <code>make run</code> 来完成编译+运行。完整的 Makefile 内容见<a href="ch09-00.html">附录B</a>。</p>
+<p>把 Makefile 放到工作目录 arceos 之下，它定义了一些快捷操作：今后执行 <code>make</code> 就可以编译内核，或者直接执行 <code>make run</code> 来完成编译+运行。完整的 Makefile 内容见 <a href="ch09-00.html">附录B</a>。</p>
 <p>尝试在工作目录下测试以下命令的有效性。</p>
 <pre><code class="language-bash">make
 make run

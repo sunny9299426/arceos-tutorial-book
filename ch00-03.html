@@ -227,7 +227,7 @@ targets = [&quot;riscv64gc-unknown-none-elf&quot;]
 <pre><code class="language-bash">error: `#[panic_handler]` function required, but not found
 </code></pre>
 <p>根据 Rust 的设计，程序遇到不可恢复异常时将会中止运行，展开调用栈，把异常信息输出到屏幕。这个机制与底层操作系统有关，定义在 std 标准库中。如前所述，我们没有现成的实现，所以只能自己给出定义。</p>
-<p>增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
+<p>在 src 目录下增加模块文件 lang_items.rs，然后在 main.rs 中加入一行 <code>mod lang_items;</code>引入该模块。</p>
 <pre><pre class="playground"><code class="language-rust editable edition2021"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use core::panic::PanicInfo;
